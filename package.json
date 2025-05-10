@@ -1,0 +1,21 @@
+{
+  "name": "jasper-bot",
+  "module": "src/index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "trustedDependencies": [
+    "@biomejs/biome"
+  ],
+  "dependencies": {
+    "erlpack": "^0.1.4",
+    "oceanic.js": "^1.12.0",
+    "pako": "^2.1.0"
+  }
+}
