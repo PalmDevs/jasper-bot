@@ -1,0 +1,80 @@
+import { ApplicationCommandOptionTypes, ApplicationIntegrationTypes, InteractionContextTypes } from 'oceanic.js'
+import { ChatCommand } from '~/classes/commands/ChatCommand'
+import { ChatCommandOptionsWithReadMessageReferenceMode } from '~/classes/commands/ChatCommandConstants'
+import { AnyCommandTriggers } from '~/classes/commands/Command'
+import { SelfError } from '~/classes/Error'
+import { s, string } from '~/strings'
+import { durationOptionResolver, ModeratorOnlyAccess } from '~/utils/commands'
+import { embed, field } from '~/utils/embeds'
+import { subtext } from '~/utils/formatters'
+import { getMember, isMemberPunishable } from '~/utils/guilds'
+import { sendModerationLog } from '~/utils/mod'
+
+const MaxDuration = 6048e5
+
+export default new ChatCommand({
+    name: 'ban',
+    description: "Somebody causin' trouble, twice?",
+    aliases: ['gtfo', 'boot', 'murder'],
+    options: [
+        {
+            name: 'user',
+            type: ApplicationCommandOptionTypes.USER,
+            description: 'The user to ban',
+            readMessageReference: ChatCommandOptionsWithReadMessageReferenceMode.Prioritize,
+            required: true,
+        },
+        {
+            name: 'dmd',
+            type: ApplicationCommandOptionTypes.STRING,
+            description: 'How long to delete messages for?',
+            resolver: durationOptionResolver({
+                skipInvalid: true,
+                min: 1000,
+                max: MaxDuration,
+            }),
+        },
+        {
+            name: 'proof',
+            type: ApplicationCommandOptionTypes.ATTACHMENT,
+            description: 'The proof for the ban',
+        },
+        {
+            name: 'reason',
+            type: ApplicationCommandOptionTypes.STRING,
+            description: 'The reason for the ban',
+            greedy: true,
+        },
+    ],
+    access: ModeratorOnlyAccess,
+    triggers: AnyCommandTriggers,
+    contexts: [InteractionContextTypes.GUILD],
+    integrationTypes: [ApplicationIntegrationTypes.GUILD_INSTALL],
+    async execute(context, { user, dmd, proof, reason }, actions) {
+        const member = await getMember(context.trigger.guildID, user.id)
+        if (member && (await isMemberPunishable(member)))
+            throw new SelfError(string(s.generic.command.errors.memberNotPunishable, member.mention))
+
+        await user.client.rest.guilds.createBan(context.trigger.guildID, user.id, {
+            deleteMessageSeconds: dmd && dmd.offset / 1000,
+            reason,
+        })
+
+        const banEmbed = embed({
+            title: `Banned ${user.tag}`,
+            fields: [
+                field(string(s.generic.user), user.mention),
+                field(string(s.generic.moderator), context.executor.mention, true),
+                field(string(s.generic.reason), reason ?? subtext(string(s.generic.command.defaults.reason)), true),
+            ],
+        })
+
+        await sendModerationLog(
+            banEmbed,
+            await actions.reply({
+                embeds: [banEmbed],
+            }),
+            proof?.url,
+        )
+    },
+})

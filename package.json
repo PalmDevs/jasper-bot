@@ -1,21 +1,40 @@
 {
   "name": "jasper-bot",
-  "module": "src/index.ts",
+  "description": "Providing assistance as well as occasional yelling.",
+  "version": "0.1.0",
+  "module": "dist/index.js",
   "type": "module",
   "private": true,
+  "scripts": {
+    "start": "bun run build && bun run .",
+    "dev": "bun run --watch src/index.ts",
+    "build": "bun run scripts/build.ts",
+    "check": "biome check .",
+    "fix": "biome check . --write"
+  },
   "devDependencies": {
-    "@biomejs/biome": "^1.9.4",
-    "@types/bun": "latest"
+    "@biomejs/biome": "^2.0.6",
+    "@types/bun": "latest",
+    "drizzle-kit": "^0.31.4"
   },
   "peerDependencies": {
-    "typescript": "^5"
+    "typescript": "^5.8.3"
   },
   "trustedDependencies": [
-    "@biomejs/biome"
+    "@biomejs/biome",
+    "erlpack",
+    "esbuild",
+    "zlib-sync"
   ],
   "dependencies": {
+    "@sapphire/duration": "^1.2.0",
+    "chalk-template": "^1.1.0",
+    "drizzle-orm": "^0.44.2",
+    "fastest-levenshtein": "^1.0.16",
+    "oceanic.js": "^1.12.0"
+  },
+  "optionalDependencies": {
     "erlpack": "^0.1.4",
-    "oceanic.js": "^1.12.0",
-    "pako": "^2.1.0"
+    "zlib-sync": "^0.1.10"
   }
 }

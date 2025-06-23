@@ -1,6 +1,20 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.8.2/schema.json",
-  "organizeImports": {
+  "$schema": "https://biomejs.dev/schemas/2.0.4/schema.json",
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": {
+          "level": "on",
+          "options": {
+            "groups": [
+              {
+                "type": false
+              }
+            ]
+          }
+        }
+      }
+    },
     "enabled": true
   },
   "linter": {
@@ -8,12 +22,19 @@
     "rules": {
       "recommended": true,
       "style": {
-        "noNonNullAssertion": {
-          "level": "off"
-        },
-        "useNodejsImportProtocol": {
-          "level": "off"
-        }
+        "noNonNullAssertion": "off",
+        "useNodejsImportProtocol": "off",
+        "useAsConstAssertion": "error",
+        "useDefaultParameterLast": "error",
+        "useEnumInitializers": "error",
+        "useSelfClosingElements": "error",
+        "noUnusedTemplateLiteral": "error",
+        "useNumberNamespace": "error",
+        "noInferrableTypes": "error",
+        "noUselessElse": "error"
+      },
+      "suspicious": {
+        "noExplicitAny": "off"
       }
     }
   },
@@ -44,7 +65,15 @@
   },
   "files": {
     "ignoreUnknown": true,
-    "include": ["*.js", "*.json", "*.ts", "*.tsx", "*.jsx", "*.mjs"],
-    "ignore": ["dist/**/*", "node_modules/**/*"]
+    "includes": [
+      "**/*.js",
+      "**/*.json",
+      "**/*.ts",
+      "**/*.tsx",
+      "**/*.jsx",
+      "**/*.mjs",
+      "!**/dist/**/*",
+      "!**/node_modules/**/*"
+    ]
   }
 }
