@@ -12,41 +12,43 @@ export async function handleChatCommandError(cmd: AnyChatCommand, err: unknown, 
     const isUserError = err instanceof UserError
     const isSelfError = err instanceof SelfError
 
-    if (isUserError || isSelfError) {
-        const errorEmbed = embed({
-            title: string(s.error[isUserError ? 'user' : 'self']),
-            description: err.message,
-            color: 'error',
-            fields: [],
-        })
-
-        if (isUserError && err.type === UserErrorType.Usage)
-            errorEmbed.fields!.push(
-                field(
-                    string(s.generic.usage),
-                    `${bold(cmd.name)} ${cmd.options
-                        .map(opt => {
-                            const info = `${bold(opt.name)}: ${string(s.generic.command.option[opt.type])}`
-                            return opt.required ? `<${info}>` : `[${info}]`
-                        })
-                        .join(' ')}`,
-                ),
-            )
-
-        return await actions.reply({
-            embeds: [errorEmbed],
-        })
-    }
-
-    log.error(LogTag, 'Something blew up while running a command:\n', err)
-    await actions.reply({
-        embeds: [
-            embed({
-                title: string(s.error.generic),
-                description: string(s.error.stack, String(err)),
-                thumbnail: Illustrations.Error,
+    try {
+        if (isUserError || isSelfError) {
+            const errorEmbed = embed({
+                title: string(s.error[isUserError ? 'user' : 'self']),
+                description: err.message,
                 color: 'error',
-            }),
-        ],
-    })
+                fields: [],
+            })
+
+            if (isUserError && err.type === UserErrorType.Usage)
+                errorEmbed.fields!.push(
+                    field(
+                        string(s.generic.usage),
+                        `${bold(cmd.name)} ${cmd.options
+                            .map(opt => {
+                                const info = `${bold(opt.name)}: ${string(s.generic.command.option[opt.type])}`
+                                return opt.required ? `<${info}>` : `[${info}]`
+                            })
+                            .join(' ')}`,
+                    ),
+                )
+
+            return await actions.reply({
+                embeds: [errorEmbed],
+            })
+        }
+
+        log.error(LogTag, 'Something blew up while running a command:\n', err)
+        await actions.reply({
+            embeds: [
+                embed({
+                    title: string(s.error.generic),
+                    description: string(s.error.stack, String(err)),
+                    thumbnail: Illustrations.Error,
+                    color: 'error',
+                }),
+            ],
+        })
+    } catch {}
 }
