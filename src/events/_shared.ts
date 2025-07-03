@@ -1,5 +1,6 @@
+import { type CommandInteraction, Message } from 'oceanic.js'
 import { SelfError, UserError, UserErrorType } from '~/classes/Error'
-import { Illustrations } from '~/constants'
+import { Emojis, Illustrations } from '~/constants'
 import { log } from '~/context'
 import { s, string } from '~/strings'
 import { embed, field } from '~/utils/embeds'
@@ -8,7 +9,12 @@ import type { AnyChatCommand, ChatCommandExecuteActions } from '~/classes/comman
 
 const LogTag = 'events/_shared'
 
-export async function handleChatCommandError(cmd: AnyChatCommand, err: unknown, actions: ChatCommandExecuteActions) {
+export async function handleChatCommandError(
+    err: unknown,
+    cmd: AnyChatCommand,
+    trigger: Message | CommandInteraction,
+    actions: ChatCommandExecuteActions,
+) {
     const isUserError = err instanceof UserError
     const isSelfError = err instanceof SelfError
 
@@ -50,5 +56,8 @@ export async function handleChatCommandError(cmd: AnyChatCommand, err: unknown, 
                 }),
             ],
         })
-    } catch {}
+    } catch {
+        if (trigger instanceof Message)
+            await trigger.client.rest.channels.createReaction(trigger.channelID, trigger.id, Emojis.error).catch()
+    }
 }

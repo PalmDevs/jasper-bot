@@ -72,7 +72,7 @@ bot.on(EventName, async msg => {
                 log.debug(LogTag, `${msg.author.tag} (${msg.author.id}) executing command:`, c.name, inspect(opts))
                 await c.execute(ctx, opts, actions)
             } catch (err) {
-                await handleChatCommandError(c, err, actions)
+                await handleChatCommandError(err, c, msg, actions)
             }
         }
     }
