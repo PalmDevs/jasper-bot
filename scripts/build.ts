@@ -10,7 +10,7 @@ await Bun.build({
         whitespace: true,
     },
     packages: 'bundle',
-    external: ['ffmpeg-static', 'erlpack', 'zlib-sync', '../config.js'],
+    external: ['ffmpeg-static', 'erlpack', 'zlib-sync', './config.js'],
     sourcemap: 'external',
     target: (process.argv[2] as Target) ?? 'bun',
 })
