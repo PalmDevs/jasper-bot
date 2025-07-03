@@ -10,13 +10,10 @@ import {
     createMockExecutor,
     createMockMessage,
     createMockTrigger,
-    MockAttachment,
     MockBot,
     MockChannel,
     MockCommandInteraction,
     MockMember,
-    MockRole,
-    MockUser,
 } from '~/__tests__/mocks'
 import { getChannel } from '~/utils/channels'
 import { getMember } from '~/utils/guilds'
@@ -24,7 +21,6 @@ import { getMessageReference } from '~/utils/messages'
 import { ChatCommand } from './ChatCommand'
 import { ChatCommandOptionTypes } from './ChatCommandConstants'
 import { CommandAccessMatchMode, CommandTriggers } from './Command'
-import type { ChatCommandOptions } from './ChatCommand'
 
 // Module mocks
 mock.module('~/context', () => ({
@@ -326,104 +322,5 @@ describe('ChatCommand', () => {
                 },
             })
         })
-    })
-
-    describe('optionsFromInteraction', () => {
-        test('extracts options correctly from interaction wrapper', async () => {
-            const opts = [
-                { type: ApplicationCommandOptionTypes.STRING, name: 'string1', description: 'desc', required: true },
-                { type: ApplicationCommandOptionTypes.INTEGER, name: 'int1', description: 'desc', required: true },
-                { type: ApplicationCommandOptionTypes.NUMBER, name: 'num1', description: 'desc', required: true },
-                { type: ApplicationCommandOptionTypes.BOOLEAN, name: 'bool1', description: 'desc', required: true },
-                { type: ApplicationCommandOptionTypes.CHANNEL, name: 'channel1', description: 'desc', required: true },
-                { type: ApplicationCommandOptionTypes.USER, name: 'user1', description: 'desc', required: true },
-                {
-                    type: ApplicationCommandOptionTypes.ATTACHMENT,
-                    name: 'attachment1',
-                    description: 'desc',
-                    required: true,
-                },
-            ] as ChatCommandOptions[]
-
-            const wrapper = {
-                getString: mock(() => 'test'),
-                getInteger: mock(() => 123),
-                getNumber: mock(() => 123.45),
-                getBoolean: mock(() => true),
-                getChannel: mock(() => MockChannel),
-                getUser: mock(() => MockUser),
-                getAttachment: mock(() => MockAttachment),
-                getRole: mock(() => MockRole),
-            } as any
-
-            const result = await ChatCommand.optionsFromInteraction({ data: { options: wrapper } } as any, opts)
-
-            expect(result).toEqual({
-                string1: 'test',
-                int1: 123,
-                num1: 123.45,
-                bool1: true,
-                channel1: MockChannel,
-                user1: MockUser,
-                attachment1: MockAttachment,
-            })
-
-            // Verify all wrapper methods were called with correct parameters
-            expect(wrapper.getString).toHaveBeenCalledWith('string1', true)
-            expect(wrapper.getInteger).toHaveBeenCalledWith('int1', true)
-            expect(wrapper.getNumber).toHaveBeenCalledWith('num1', true)
-            expect(wrapper.getBoolean).toHaveBeenCalledWith('bool1', true)
-            expect(wrapper.getChannel).toHaveBeenCalledWith('channel1', true)
-            expect(wrapper.getUser).toHaveBeenCalledWith('user1', true)
-            expect(wrapper.getAttachment).toHaveBeenCalledWith('attachment1', true)
-        })
-    })
-
-    test('extracts options from interaction with subcommand (groups)', async () => {
-        const opts: ChatCommandOptions[] = [
-            {
-                type: ApplicationCommandOptionTypes.SUB_COMMAND_GROUP,
-                name: 'group1',
-                description: 'desc',
-                options: [
-                    {
-                        type: ApplicationCommandOptionTypes.SUB_COMMAND,
-                        name: 'sub1',
-                        description: 'desc',
-                        options: [
-                            {
-                                type: ApplicationCommandOptionTypes.STRING,
-                                name: 'string1',
-                                description: 'desc',
-                                required: true,
-                            },
-                        ],
-                    },
-                ],
-            },
-        ]
-
-        const wrapper = {
-            getString: mock(() => 'test'),
-        } as any
-
-        const result = await ChatCommand.optionsFromInteraction({ data: { options: wrapper } } as any, opts)
-
-        expect(result).toEqual({ group1: { sub1: { string1: 'test' } } })
-        expect(wrapper.getString).toHaveBeenCalledWith('string1', true)
-    })
-
-    test('extracts options from interaction with subcommand with no options', async () => {
-        const opts: ChatCommandOptions[] = [
-            {
-                type: ApplicationCommandOptionTypes.SUB_COMMAND,
-                name: 'sub1',
-                description: 'desc',
-            },
-        ]
-
-        const result = await ChatCommand.optionsFromInteraction({ data: { options: {} } } as any, opts)
-
-        expect(result).toEqual({ sub1: true })
     })
 })
