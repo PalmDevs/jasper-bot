@@ -18,6 +18,7 @@ export const EmojiIds = {
     jasper_head: '1371546922715840564',
     mentioned: '1372208643079929917',
     denied: '1372289047665443000',
+    error: '1390295190476165140',
 }
 
 export const Emojis = new Proxy<Record<keyof typeof EmojiIds, string>>(EmojiIds, {
@@ -32,7 +33,7 @@ export const Illustrations = {
     GetMuted: 'https://cdn.discordapp.com/attachments/1371819477708308581/1371949651275677806/GetMuted.png',
     RoleAdded: 'https://cdn.discordapp.com/attachments/1371819477708308581/1372524378914291782/RoleAdded.png',
     RoleRemoved: 'https://cdn.discordapp.com/attachments/1371819477708308581/1372524378616500345/RoleRemoved.png',
-    Error: 'https://cdn.discordapp.com/attachments/1371819477708308581/1372204796483862581/Error2.png',
+    Error: 'https://cdn.discordapp.com/attachments/1371819477708308581/1390295544043274280/Error.png',
 }
 
 export type ProductColorResolvable = keyof typeof ProductColors
