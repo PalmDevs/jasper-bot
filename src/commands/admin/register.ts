@@ -1,4 +1,4 @@
-import { ApplicationIntegrationTypes } from 'oceanic.js'
+import { ApplicationIntegrationTypes, MessageFlags } from 'oceanic.js'
 import { ChatCommand } from '~/classes/commands/ChatCommand'
 import { AnyCommandContexts, AnyCommandTriggers, Command, CommandTriggers } from '~/classes/commands/Command'
 import { s, string } from '~/strings'
@@ -21,8 +21,9 @@ export default new ChatCommand({
                 .map(cmd => (cmd.constructor as typeof Command).toApplicationCommand(cmd)),
         )
 
-        actions.reply({
+        await actions.reply({
             content: string(s.command.register.success),
+            flags: MessageFlags.EPHEMERAL,
         })
     },
 })

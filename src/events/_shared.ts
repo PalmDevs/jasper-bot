@@ -1,4 +1,4 @@
-import { type CommandInteraction, Message } from 'oceanic.js'
+import { type CommandInteraction, Message, MessageFlags } from 'oceanic.js'
 import { SelfError, UserError, UserErrorType } from '~/classes/Error'
 import { Emojis, Illustrations } from '~/constants'
 import { log } from '~/context'
@@ -42,6 +42,7 @@ export async function handleChatCommandError(
 
             return await actions.reply({
                 embeds: [errorEmbed],
+                flags: MessageFlags.EPHEMERAL,
             })
         }
 
@@ -55,6 +56,7 @@ export async function handleChatCommandError(
                     color: 'error',
                 }),
             ],
+            flags: MessageFlags.EPHEMERAL,
         })
     } catch {
         if (trigger instanceof Message)

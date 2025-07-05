@@ -1,5 +1,10 @@
 import assert from 'assert'
-import { ApplicationCommandOptionTypes, ApplicationIntegrationTypes, InteractionContextTypes } from 'oceanic.js'
+import {
+    ApplicationCommandOptionTypes,
+    ApplicationIntegrationTypes,
+    InteractionContextTypes,
+    MessageFlags,
+} from 'oceanic.js'
 import { ChatCommand } from '~/classes/commands/ChatCommand'
 import {
     ChatCommandOptionsWithReadMessageReferenceMode,
@@ -49,6 +54,7 @@ export default new ChatCommand({
                         description: string(s.command.note.all, Object.keys(notes)),
                     }),
                 ],
+                flags: MessageFlags.EPHEMERAL,
             })
 
         const note = notes[name]

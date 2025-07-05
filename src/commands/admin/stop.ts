@@ -1,4 +1,4 @@
-import { ApplicationIntegrationTypes } from 'oceanic.js'
+import { ApplicationIntegrationTypes, MessageFlags } from 'oceanic.js'
 import { ChatCommand } from '~/classes/commands/ChatCommand'
 import { AnyCommandContexts, AnyCommandTriggers } from '~/classes/commands/Command'
 import { log } from '~/context'
@@ -19,6 +19,7 @@ export default new ChatCommand({
 
         await actions.reply({
             content: string(s.command.stop.response),
+            flags: MessageFlags.EPHEMERAL,
         })
 
         log.warn('commands/stop', `Alright, my job here is done. Thanks to ${executor.tag} (${executor.id}).`)

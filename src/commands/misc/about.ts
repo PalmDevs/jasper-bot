@@ -1,3 +1,4 @@
+import { MessageFlags } from 'oceanic.js'
 import { ChatCommand } from '~/classes/commands/ChatCommand'
 import { AnyCommandContexts, AnyCommandIntegrationTypes, AnyCommandTriggers } from '~/classes/commands/Command'
 import { Product } from '~/constants'
@@ -28,6 +29,7 @@ export default new ChatCommand({
                     ],
                 }),
             ],
+            flags: MessageFlags.EPHEMERAL,
         })
     },
 })
