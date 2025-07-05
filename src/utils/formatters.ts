@@ -13,3 +13,7 @@ export function code(text: string | number) {
 export function bold(text: string | number) {
     return `**${text}**`
 }
+
+export function emoji(emoji: string) {
+    return `<:${emoji}>`
+}

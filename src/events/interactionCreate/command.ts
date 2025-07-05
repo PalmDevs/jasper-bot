@@ -4,6 +4,7 @@ import { ChatCommand } from '~/classes/commands/ChatCommand'
 import { Command, CommandTriggers } from '~/classes/commands/Command'
 import { Emojis } from '~/constants'
 import { bot, commands, log } from '~/context'
+import { emoji } from '~/utils/formatters'
 import { handleChatCommandError } from '../_shared'
 import type { ChatCommandExecuteContext } from '~/classes/commands/ChatCommand'
 
@@ -24,7 +25,7 @@ bot.on(EventName, async intr => {
         !Command.canExecuteInContext(cmd, intr.guildID ? InteractionContextTypes.GUILD : InteractionContextTypes.BOT_DM)
     )
         return await intr.reply({
-            content: Emojis.denied,
+            content: emoji(Emojis.denied),
             flags: MessageFlags.EPHEMERAL,
         })
 
@@ -35,7 +36,7 @@ bot.on(EventName, async intr => {
 
     if (!(await ChatCommand.canExecute(cmd, ctx)))
         return await intr.reply({
-            content: Emojis.denied,
+            content: emoji(Emojis.denied),
             flags: MessageFlags.EPHEMERAL,
         })
 
