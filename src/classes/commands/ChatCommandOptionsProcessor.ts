@@ -197,6 +197,8 @@ export async function optionsFromMessage<Options extends ChatCommandOptions[]>(
             case ApplicationCommandOptionTypes.SUB_COMMAND:
             case ApplicationCommandOptionTypes.SUB_COMMAND_GROUP: {
                 await handleSubCommandLikeOption(opt, ctx)
+                // If there's an error, we need the next option to process the argument instead
+                if (ctx.err) break
                 break loop
             }
 
