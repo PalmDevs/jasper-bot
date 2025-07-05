@@ -8,7 +8,8 @@ import { handleChatCommandError } from '../_shared'
 import type { AnyChatCommand, ChatCommandExecuteContext } from '~/classes/commands/ChatCommand'
 
 const EventName = 'interactionCreate'
-const LogTag = `events/${EventName}`
+const EventHandlerName = 'command'
+const LogTag = `events/${EventName}/${EventHandlerName}`
 
 bot.on(EventName, async intr => {
     if (!intr.isCommandInteraction()) return

@@ -72,6 +72,9 @@ export interface Config {
             }
         }
     }
+    autorole?: {
+        [guildId: string]: string[]
+    }
     notes?: {
         [guildId: string]: {
             [note: string]: CreateMessageOptions
