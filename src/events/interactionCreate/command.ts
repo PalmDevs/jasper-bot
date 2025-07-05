@@ -1,4 +1,4 @@
-import { type CommandInteraction, InteractionContextTypes, InteractionTypes, MessageFlags } from 'oceanic.js'
+import { type CommandInteraction, InteractionContextTypes, MessageFlags } from 'oceanic.js'
 import { inspect } from 'util'
 import { ChatCommand } from '~/classes/commands/ChatCommand'
 import { Command, CommandTriggers } from '~/classes/commands/Command'
@@ -13,7 +13,7 @@ const EventHandlerName = 'command'
 const LogTag = `events/${EventName}/${EventHandlerName}`
 
 bot.on(EventName, async intr => {
-    if (!intr.isCommandInteraction() || intr.type !== InteractionTypes.APPLICATION_COMMAND) return
+    if (!intr.isCommandInteraction() || !intr.isChatInputCommand()) return
 
     const { name } = intr.data
     const cmd = commands.get(name)
