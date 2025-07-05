@@ -47,7 +47,7 @@ bot.on(EventName, async intr => {
             const actions = ChatCommand.createExecuteActions(intr)
 
             try {
-                const opts = ChatCommand.optionsFromInteraction(intr, c.options)
+                const opts = await ChatCommand.optionsFromInteraction(intr, c.options)
                 log.debug(LogTag, `${intr.user.tag} (${intr.user.id}) executing command:`, c.name, inspect(opts))
                 await c.execute(ctx, opts, actions)
             } catch (err) {
