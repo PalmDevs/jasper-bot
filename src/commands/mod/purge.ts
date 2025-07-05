@@ -10,6 +10,7 @@ import { AnyCommandTriggers } from '~/classes/commands/Command'
 import { s, string } from '~/strings'
 import { ModeratorOnlyAccess } from '~/utils/commands'
 import { embed } from '~/utils/embeds'
+import { sendModerationLog } from '~/utils/mod'
 
 export default new ChatCommand({
     name: 'purge',
@@ -47,12 +48,15 @@ export default new ChatCommand({
 
         await channel.deleteMessages(msgs)
 
-        await actions.reply({
-            embeds: [
-                embed({
-                    title: string(s.command.purge.success, amount),
-                }),
-            ],
+        const purgeEmbed = embed({
+            title: string(s.command.purge.success, amount),
         })
+
+        await sendModerationLog(
+            purgeEmbed,
+            await actions.reply({
+                embeds: [purgeEmbed],
+            }),
+        )
     },
 })

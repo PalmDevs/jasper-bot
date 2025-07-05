@@ -5,6 +5,7 @@ import { s, string } from '~/strings'
 import { durationOptionResolver, ModeratorOnlyAccess } from '~/utils/commands'
 import { formatDuration } from '~/utils/durations'
 import { embed } from '~/utils/embeds'
+import { sendModerationLog } from '~/utils/mod'
 
 const MaxDuration = 216e5
 
@@ -35,12 +36,15 @@ export default new ChatCommand({
             rateLimitPerUser: duration.offset / 1000,
         })
 
-        await actions.reply({
-            embeds: [
-                embed({
-                    title: string(s.command.slowmode.success, formatDuration(duration.offset)),
-                }),
-            ],
+        const smEmbed = embed({
+            title: string(s.command.slowmode.success, formatDuration(duration.offset)),
         })
+
+        await sendModerationLog(
+            smEmbed,
+            await actions.reply({
+                embeds: [smEmbed],
+            }),
+        )
     },
 })
