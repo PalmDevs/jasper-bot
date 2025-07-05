@@ -13,13 +13,13 @@ import { embed } from '~/utils/embeds'
 
 export default new ChatCommand({
     name: 'purge',
-    description: 'Remove messages from the channel.',
+    description: 'Clean up the room.',
     aliases: ['nuke'],
     options: [
         {
             name: 'amount',
             type: ApplicationCommandOptionTypes.INTEGER,
-            description: 'How many messages to remove?',
+            description: 'How many messages?',
             required: true,
             minValue: 1,
             maxValue: 100,
@@ -27,7 +27,7 @@ export default new ChatCommand({
         {
             name: 'before',
             type: ChatCommandOptionTypes.MESSAGE,
-            description: 'The message to delete messages before.',
+            description: 'What to use as the starting point?',
         },
     ],
     access: ModeratorOnlyAccess,

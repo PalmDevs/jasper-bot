@@ -13,13 +13,13 @@ export default new ChatCommand({
     options: [
         {
             name: 'code',
-            description: 'The code to evaluate',
+            description: 'What do I run?',
             type: ApplicationCommandOptionTypes.STRING,
             required: true,
         },
         {
             name: 'depth',
-            description: 'How much depth to inspect the result (default: 3)',
+            description: 'How much depth to inspect the result? (Default: 3)',
             type: ApplicationCommandOptionTypes.INTEGER,
             required: false,
         },

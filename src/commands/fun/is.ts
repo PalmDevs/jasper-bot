@@ -6,12 +6,13 @@ import { s, string } from '~/strings'
 
 export default new ChatCommand({
     name: 'is',
-    description: 'Ask Jasper a question.',
+    description: 'Ask me a question.',
     aliases: [
         'am',
         'are',
         'do',
         'does',
+        'did',
         'will',
         'would',
         'should',
@@ -29,7 +30,7 @@ export default new ChatCommand({
     options: [
         {
             name: 'question',
-            description: 'The question to ask the 8ball.',
+            description: 'What is it?',
             type: ApplicationCommandOptionTypes.STRING,
             required: false,
         },

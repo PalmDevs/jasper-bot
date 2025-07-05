@@ -10,13 +10,13 @@ const MaxDuration = 216e5
 
 export default new ChatCommand({
     name: 'slowmode',
-    description: "Everybody won't shut up?",
+    description: "No one shuttin' up?",
     aliases: ['sm'],
     options: [
         {
             name: 'duration',
             type: ApplicationCommandOptionTypes.STRING,
-            description: 'How long to set the slowmode for?',
+            description: 'How long?',
             required: true,
             resolver: durationOptionResolver({
                 min: 1000,

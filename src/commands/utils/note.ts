@@ -19,12 +19,12 @@ export default new ChatCommand({
         {
             name: 'note',
             type: ApplicationCommandOptionTypes.STRING,
-            description: 'The name of the note to retrieve',
+            description: 'What do I send?',
         },
         {
             name: 'reply_to',
             type: ChatCommandOptionTypes.MESSAGE,
-            description: 'The message to reply to',
+            description: 'What do I reply to?',
             readMessageReference: ChatCommandOptionsWithReadMessageReferenceMode.Fallback,
         },
     ],

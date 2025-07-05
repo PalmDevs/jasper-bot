@@ -15,19 +15,19 @@ export default new ChatCommand({
         {
             name: 'add',
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description: 'Add a role to a user',
+            description: 'Add a role to a user.',
             aliases: new Set(['+', 'a']),
             options: [
                 {
                     name: 'role',
                     type: ApplicationCommandOptionTypes.ROLE,
-                    description: 'The role to add',
+                    description: 'What role?',
                     required: true,
                 },
                 {
                     name: 'user',
                     type: ApplicationCommandOptionTypes.USER,
-                    description: 'The user to add the role to',
+                    description: 'Who to?',
                     required: true,
                     readMessageReference: ChatCommandOptionsWithReadMessageReferenceMode.Fallback,
                 },
@@ -36,19 +36,19 @@ export default new ChatCommand({
         {
             name: 'remove',
             type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description: 'Remove a role from a user',
+            description: 'Remove a role from a user.',
             aliases: new Set(['-', 'r']),
             options: [
                 {
                     name: 'role',
                     type: ApplicationCommandOptionTypes.ROLE,
-                    description: 'The role to remove',
+                    description: 'What role?',
                     required: true,
                 },
                 {
                     name: 'user',
                     type: ApplicationCommandOptionTypes.USER,
-                    description: 'The user to remove the role from',
+                    description: 'Who from?',
                     required: true,
                     readMessageReference: ChatCommandOptionsWithReadMessageReferenceMode.Fallback,
                 },

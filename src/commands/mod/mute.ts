@@ -15,20 +15,20 @@ const MaxDuration = parseDuration('4w')
 
 export default new ChatCommand({
     name: 'mute',
-    description: "Somebody causin' trouble?",
+    description: "Somebody bein' a bit of an ass?",
     aliases: ['stfu', 'shutup', 'shut'],
     options: [
         {
             name: 'user',
             type: ApplicationCommandOptionTypes.USER,
-            description: 'The user to mute',
+            description: 'Who?',
             readMessageReference: ChatCommandOptionsWithReadMessageReferenceMode.Prioritize,
             required: true,
         },
         {
             name: 'duration',
             type: ApplicationCommandOptionTypes.STRING,
-            description: 'How long to mute for?',
+            description: 'How long? (Range: 1 second - 28 days) (Default: 28 days)',
             resolver: durationOptionResolver({
                 skipInvalid: true,
                 min: 1000,
@@ -38,12 +38,12 @@ export default new ChatCommand({
         {
             name: 'proof',
             type: ApplicationCommandOptionTypes.ATTACHMENT,
-            description: 'The proof for the mute',
+            description: 'Any proof?',
         },
         {
             name: 'reason',
             type: ApplicationCommandOptionTypes.STRING,
-            description: 'The reason for the mute',
+            description: 'What for?',
             greedy: true,
         },
     ],

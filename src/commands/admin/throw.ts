@@ -10,7 +10,7 @@ export default new ChatCommand({
     options: [
         {
             name: 'type',
-            description: 'Type of error to throw',
+            description: 'What do I throw up?',
             type: ApplicationCommandOptionTypes.STRING,
             choices: [
                 {

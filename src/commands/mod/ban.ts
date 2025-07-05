@@ -14,20 +14,20 @@ const MaxDuration = 6048e5
 
 export default new ChatCommand({
     name: 'ban',
-    description: "Somebody causin' trouble, twice?",
-    aliases: ['gtfo', 'boot', 'murder'],
+    description: "Somebody causin' trouble?",
+    aliases: ['gtfo', 'boot', 'murder', 'kill', 'explode'],
     options: [
         {
             name: 'user',
             type: ApplicationCommandOptionTypes.USER,
-            description: 'The user to ban',
+            description: 'Who?',
             readMessageReference: ChatCommandOptionsWithReadMessageReferenceMode.Prioritize,
             required: true,
         },
         {
             name: 'dmd',
             type: ApplicationCommandOptionTypes.STRING,
-            description: 'How long to delete messages for?',
+            description: 'How much to clean up?',
             resolver: durationOptionResolver({
                 skipInvalid: true,
                 min: 1000,
@@ -37,12 +37,12 @@ export default new ChatCommand({
         {
             name: 'proof',
             type: ApplicationCommandOptionTypes.ATTACHMENT,
-            description: 'The proof for the ban',
+            description: 'Any proof?',
         },
         {
             name: 'reason',
             type: ApplicationCommandOptionTypes.STRING,
-            description: 'The reason for the ban',
+            description: 'What for?',
             greedy: true,
         },
     ],

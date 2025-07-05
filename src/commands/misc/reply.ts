@@ -1,43 +1,36 @@
-import {
-    ApplicationCommandOptionTypes,
-    ApplicationIntegrationTypes,
-    InteractionContextTypes,
-    Message,
-} from 'oceanic.js'
+import { ApplicationCommandOptionTypes, ApplicationIntegrationTypes, InteractionContextTypes } from 'oceanic.js'
 import { ChatCommand } from '~/classes/commands/ChatCommand'
 import {
     ChatCommandOptionsWithReadMessageReferenceMode,
     ChatCommandOptionTypes,
 } from '~/classes/commands/ChatCommandConstants'
-import { AnyCommandTriggers } from '~/classes/commands/Command'
+import { CommandTriggers } from '~/classes/commands/Command'
 import { ModeratorOnlyAccess } from '~/utils/commands'
 
 export default new ChatCommand({
     name: 'reply',
-    description: 'Make me more sentient.',
+    description: 'Say something as me, sure is fun, totally.',
     aliases: ['say'],
     options: [
         {
             name: 'message',
             type: ApplicationCommandOptionTypes.STRING,
-            description: 'The message to reply with',
+            description: 'What do I say?',
             required: true,
         },
         {
             name: 'reference',
             type: ChatCommandOptionTypes.MESSAGE,
-            description: 'The message to reply to',
+            description: 'What do I reply to?',
             readMessageReference: ChatCommandOptionsWithReadMessageReferenceMode.Fallback,
         },
     ],
     access: ModeratorOnlyAccess,
-    triggers: AnyCommandTriggers,
+    triggers: CommandTriggers.PlatformImplementation,
     contexts: [InteractionContextTypes.GUILD],
     integrationTypes: [ApplicationIntegrationTypes.GUILD_INSTALL],
     async execute(context, options) {
         const { trigger } = context
-
-        if (trigger instanceof Message) await trigger.delete()
 
         await trigger.client.rest.channels.createMessage(trigger.channelID, {
             content: options.message,

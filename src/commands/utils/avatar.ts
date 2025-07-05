@@ -11,7 +11,7 @@ export default new ChatCommand({
         {
             name: 'user',
             type: ApplicationCommandOptionTypes.USER,
-            description: 'The user to view the avatar of',
+            description: '... of who?',
             readMessageReference: ChatCommandOptionsWithReadMessageReferenceMode.Fallback,
         },
     ],

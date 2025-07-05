@@ -1,15 +1,15 @@
 import { Message } from 'oceanic.js'
 import { setTimeout as setTimeoutPromise } from 'timers/promises'
 import { ChatCommand } from '~/classes/commands/ChatCommand'
-import { AnyCommandContexts, AnyCommandIntegrationTypes, AnyCommandTriggers } from '~/classes/commands/Command'
+import { AnyCommandContexts, AnyCommandIntegrationTypes, CommandTriggers } from '~/classes/commands/Command'
 import { s, string } from '~/strings'
 
 export default new ChatCommand({
     name: 'hello',
-    description: 'Say hello.',
+    description: 'Spit it out already.',
     aliases: ['hi', 'hey', 'sup', ''],
     options: [],
-    triggers: AnyCommandTriggers,
+    triggers: CommandTriggers.ChatMessage,
     contexts: AnyCommandContexts,
     integrationTypes: AnyCommandIntegrationTypes,
     async execute(context, _options, actions) {
