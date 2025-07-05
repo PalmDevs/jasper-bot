@@ -89,5 +89,5 @@ export const MockCommandInteraction = class CommandInteraction {
     id = '123'
     channelID = '456'
     guildID = '789'
-    createFollowup = mock(() => Promise.resolve({ message: {} }))
+    reply = mock(() => Promise.resolve({ message: {}, getMessage: () => ({}) }))
 }

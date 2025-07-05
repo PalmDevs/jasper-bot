@@ -6,7 +6,7 @@ import { Emojis } from '~/constants'
 import { bot, commands, config, log } from '~/context'
 import { parseArguments } from '~/utils/parsers'
 import { handleChatCommandError } from '../_shared'
-import type { AnyChatCommand, ChatCommandExecuteContext } from '~/classes/commands/ChatCommand'
+import type { ChatCommandExecuteContext } from '~/classes/commands/ChatCommand'
 
 const EventName = 'messageCreate'
 const EventHandlerName = 'command'
@@ -46,6 +46,8 @@ bot.on(EventName, async msg => {
 
     const cmd = commands.get(cmdName)
     if (!cmd) return
+    if (!(cmd instanceof ChatCommand))
+        return log.error(LogTag, `Command ${cmdName} is not a chat command!`, inspect(cmd))
 
     if (
         !Command.canExecuteViaTrigger(cmd, CommandTriggers.ChatMessage) ||
@@ -55,26 +57,20 @@ bot.on(EventName, async msg => {
 
     const args = content.slice(cmdName.length)
 
-    switch (cmd.constructor) {
-        case ChatCommand: {
-            const c = cmd as AnyChatCommand
+    const ctx: ChatCommandExecuteContext<any> = {
+        executor: msg.author,
+        trigger: msg,
+    }
 
-            const ctx: ChatCommandExecuteContext<any> = {
-                executor: msg.author,
-                trigger: msg,
-            }
+    if (!(await ChatCommand.canExecute(cmd, ctx))) return msg.createReaction(Emojis.denied)
 
-            if (!(await ChatCommand.canExecute(c, ctx))) return msg.createReaction(Emojis.denied)
+    const actions = ChatCommand.createExecuteActions(msg)
 
-            const actions = ChatCommand.createExecuteActions(msg)
-
-            try {
-                const opts = await ChatCommand.optionsFromMessage(msg, parseArguments(args), c.options)
-                log.debug(LogTag, `${msg.author.tag} (${msg.author.id}) executing command:`, c.name, inspect(opts))
-                await c.execute(ctx, opts, actions)
-            } catch (err) {
-                await handleChatCommandError(err, c, msg, actions)
-            }
-        }
+    try {
+        const opts = await ChatCommand.optionsFromMessage(msg, parseArguments(args), cmd.options)
+        log.debug(LogTag, `${msg.author.tag} (${msg.author.id}) executing command:`, cmd.name, inspect(opts))
+        await cmd.execute(ctx, opts, actions)
+    } catch (err) {
+        await handleChatCommandError(err, cmd, msg, actions)
     }
 })

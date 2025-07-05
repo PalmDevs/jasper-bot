@@ -101,7 +101,7 @@ export class ChatCommand<
     static createExecuteActions(trigger: CommandInteraction | Message): ChatCommandExecuteActions {
         return {
             reply(content) {
-                if (trigger instanceof CommandInteraction) return trigger.createFollowup(content).then(it => it.message)
+                if (trigger instanceof CommandInteraction) return trigger.reply(content).then(it => it.getMessage())
 
                 const cnt = content as CreateMessageOptions
 

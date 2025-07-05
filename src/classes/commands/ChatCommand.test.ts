@@ -305,7 +305,7 @@ describe('ChatCommand', () => {
 
             await actions.reply({ content: 'test' })
 
-            expect(intr.createFollowup).toHaveBeenCalledWith({ content: 'test' })
+            expect(intr.reply).toHaveBeenCalledWith({ content: 'test' })
         })
 
         test('reply with Message', async () => {
