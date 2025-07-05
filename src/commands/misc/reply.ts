@@ -1,10 +1,16 @@
-import { ApplicationCommandOptionTypes, ApplicationIntegrationTypes, InteractionContextTypes } from 'oceanic.js'
+import {
+    ApplicationCommandOptionTypes,
+    ApplicationIntegrationTypes,
+    InteractionContextTypes,
+    MessageFlags,
+} from 'oceanic.js'
 import { ChatCommand } from '~/classes/commands/ChatCommand'
 import {
     ChatCommandOptionsWithReadMessageReferenceMode,
     ChatCommandOptionTypes,
 } from '~/classes/commands/ChatCommandConstants'
 import { CommandTriggers } from '~/classes/commands/Command'
+import { s, string } from '~/strings'
 import { ModeratorOnlyAccess } from '~/utils/commands'
 
 export default new ChatCommand({
@@ -39,6 +45,11 @@ export default new ChatCommand({
                       messageID: options.reference.id,
                   }
                 : undefined,
+        })
+
+        await trigger.reply({
+            content: string(s.command.reply.success),
+            flags: MessageFlags.EPHEMERAL,
         })
     },
 })

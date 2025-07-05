@@ -109,6 +109,9 @@ const STRINGS = {
         register: {
             success: 'Slash commands registered successfully.',
         },
+        reply: {
+            success: 'Fine.',
+        },
         role: {
             reason: (tag: string, id: string) => `via command by ${tag} (${id})`,
             added: 'Added role',
