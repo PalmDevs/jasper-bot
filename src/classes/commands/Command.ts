@@ -30,7 +30,7 @@ export abstract class Command<
     /**
      * @internal This should only by classes extending {@link Command}.
      */
-    protected static toApplicationCommand(cmd: AnyCommand): CreateApplicationCommandOptions {
+    static toApplicationCommand(cmd: AnyCommand): CreateApplicationCommandOptions {
         // @ts-expect-error
         return {
             name: cmd.name,

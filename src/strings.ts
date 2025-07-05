@@ -106,6 +106,9 @@ const STRINGS = {
         purge: {
             success: (amount: number) => `Purged ${amount} messages.`,
         },
+        register: {
+            success: 'Slash commands registered successfully.',
+        },
         role: {
             reason: (tag: string, id: string) => `via command by ${tag} (${id})`,
             added: 'Added role',

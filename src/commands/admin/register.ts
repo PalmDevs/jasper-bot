@@ -1,27 +1,28 @@
-import { ApplicationCommandOptionTypes, ApplicationIntegrationTypes } from 'oceanic.js'
+import { ApplicationIntegrationTypes } from 'oceanic.js'
 import { ChatCommand } from '~/classes/commands/ChatCommand'
-import { AnyCommandContexts, AnyCommandTriggers } from '~/classes/commands/Command'
+import { AnyCommandContexts, AnyCommandTriggers, Command, CommandTriggers } from '~/classes/commands/Command'
+import { s, string } from '~/strings'
 import { AdminOnlyAccess } from '~/utils/commands'
+import { cmds } from '../_all'
 
 export default new ChatCommand({
     name: 'register',
     description: 'Register commands as application commands.',
     aliases: [],
-    options: [
-        {
-            name: 'guild',
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description: 'Register commands in this guild',
-        },
-        {
-            name: 'global',
-            type: ApplicationCommandOptionTypes.SUB_COMMAND,
-            description: 'Register commands globally',
-        },
-    ],
+    options: [],
     triggers: AnyCommandTriggers,
     contexts: AnyCommandContexts,
     integrationTypes: [ApplicationIntegrationTypes.USER_INSTALL],
     access: AdminOnlyAccess,
-    async execute(_context, _options, _actions) {},
+    async execute(context, _options, actions) {
+        await context.trigger.client.application.bulkEditGlobalCommands(
+            cmds
+                .filter(cmd => Command.canExecuteViaTrigger(cmd, CommandTriggers.PlatformImplementation))
+                .map(cmd => (cmd.constructor as typeof Command).toApplicationCommand(cmd)),
+        )
+
+        actions.reply({
+            content: string(s.command.register.success),
+        })
+    },
 })

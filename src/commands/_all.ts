@@ -18,7 +18,7 @@ import NoteCommand from './utils/note'
 
 const LogTag = 'commands'
 
-for (const cmd of [
+export const cmds = [
     EvalCommand,
     StopCommand,
     RegisterCommand,
@@ -34,7 +34,9 @@ for (const cmd of [
     SlowmodeCommand,
     AvatarCommand,
     NoteCommand,
-]) {
+]
+
+for (const cmd of cmds) {
     if (commands.has(cmd.name))
         log.warn(LogTag, `Aliases ${cmd.name} for ${commands.get(cmd.name)!.name} collides with existing command.`)
 
