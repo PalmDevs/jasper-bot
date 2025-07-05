@@ -20,25 +20,27 @@ export async function handleChatCommandError(
 
     try {
         if (isUserError || isSelfError) {
+            const isUsageError = isUserError && err.type === UserErrorType.Usage
+
             const errorEmbed = embed({
                 title: string(s.error[isUserError ? 'user' : 'self']),
                 description: err.message,
                 color: 'error',
-                fields: [],
+                fields: isUsageError
+                    ? [
+                          field(
+                              string(s.generic.usage),
+                              `${bold(cmd.name)} ${cmd.options
+                                  .map(opt => {
+                                      const info = `${bold(opt.name)}: ${string(s.generic.command.option[opt.type])}`
+                                      return opt.required ? `<${info}>` : `[${info}]`
+                                  })
+                                  .join(' ')}`,
+                          ),
+                      ]
+                    : undefined,
+                thumbnail: isUsageError ? Illustrations.Confused : undefined,
             })
-
-            if (isUserError && err.type === UserErrorType.Usage)
-                errorEmbed.fields!.push(
-                    field(
-                        string(s.generic.usage),
-                        `${bold(cmd.name)} ${cmd.options
-                            .map(opt => {
-                                const info = `${bold(opt.name)}: ${string(s.generic.command.option[opt.type])}`
-                                return opt.required ? `<${info}>` : `[${info}]`
-                            })
-                            .join(' ')}`,
-                    ),
-                )
 
             return await actions.reply({
                 embeds: [errorEmbed],

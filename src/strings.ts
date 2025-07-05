@@ -3,7 +3,7 @@ import { ApplicationCommandOptionTypes } from 'oceanic.js'
 import { ChatCommandOptionTypes } from './classes/commands/ChatCommandConstants'
 import { Emojis } from './constants'
 import { log } from './context'
-import { bold, code, codeblock } from './utils/formatters'
+import { bold, code, codeblock, emoji } from './utils/formatters'
 
 interface Strings {
     status: {
@@ -77,8 +77,9 @@ const STRINGS = {
                 '?',
                 'Hm?',
                 'Leave me alone.',
-                () => `<:${Emojis.jasper}>`,
-                () => `<:${Emojis.mentioned}>`,
+                () => emoji(Emojis.jasper),
+                () => emoji(Emojis.mentioned),
+                () => emoji(Emojis.confused),
                 "One day, I'll be able to get away with muting you.",
                 'Why are you...?',
                 'Stop it.',

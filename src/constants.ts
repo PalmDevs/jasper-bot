@@ -19,6 +19,7 @@ export const EmojiIds = {
     mentioned: '1372208643079929917',
     denied: '1372289047665443000',
     error: '1390295190476165140',
+    confused: '1391058470979113021',
 }
 
 export const Emojis = new Proxy<Record<keyof typeof EmojiIds, string>>(EmojiIds, {
@@ -34,6 +35,7 @@ export const Illustrations = {
     RoleAdded: 'https://cdn.discordapp.com/attachments/1371819477708308581/1372524378914291782/RoleAdded.png',
     RoleRemoved: 'https://cdn.discordapp.com/attachments/1371819477708308581/1372524378616500345/RoleRemoved.png',
     Error: 'https://cdn.discordapp.com/attachments/1371819477708308581/1390295544043274280/Error.png',
+    Confused: 'https://cdn.discordapp.com/attachments/1371819477708308581/1391060848788639916/Confused.png',
 }
 
 export type ProductColorResolvable = keyof typeof ProductColors
