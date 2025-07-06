@@ -79,6 +79,8 @@ function getActualMessageContentAndTriggerInfo(msg: Message): [] | [string, bool
                 if (lastMentionIndex >= 0)
                     return [content.substring(0, lastMentionIndex).trimEnd(), triggeredByReplyMentions]
             }
+
+            return [content, triggeredByReplyMentions]
         }
     }
 
