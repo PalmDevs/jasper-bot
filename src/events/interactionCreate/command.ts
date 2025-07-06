@@ -22,7 +22,10 @@ bot.on(EventName, async intr => {
 
     if (
         !Command.canExecuteViaTrigger(cmd, CommandTriggers.PlatformImplementation) ||
-        !Command.canExecuteInContext(cmd, intr.guildID ? InteractionContextTypes.GUILD : InteractionContextTypes.BOT_DM)
+        !Command.canExecuteInContext(
+            cmd,
+            intr.context ?? (intr.guildID ? InteractionContextTypes.GUILD : InteractionContextTypes.BOT_DM),
+        )
     )
         return await intr.reply({
             content: emoji(Emojis.denied),
