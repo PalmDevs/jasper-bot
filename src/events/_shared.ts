@@ -23,7 +23,7 @@ export async function handleChatCommandError(
             const isUsageError = isUserError && err.type === UserErrorType.Usage
 
             const errorEmbed = embed({
-                title: string(s.error[isUserError ? 'user' : 'self']),
+                title: string(isUserError ? s.error.user : s.error.self),
                 description: err.message,
                 color: 'error',
                 fields: isUsageError
