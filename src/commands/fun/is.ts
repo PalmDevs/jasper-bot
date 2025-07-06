@@ -11,7 +11,7 @@ import { SimHashNgramSize, simHash } from '~/utils/hashes'
 const recentResponses = new WeakMap<Message, number>()
 // Hash -> Response Index
 const recentQuestions = new SortedLRUMap<number>(100)
-const MaxDiffPercent = 0.15 // 15% difference
+const MaxDiffPercent = 0.75 // 75% difference
 
 const MaxConfirmationResponseDistance = 3
 const ConfirmationResponses = [
@@ -109,14 +109,14 @@ export default new ChatCommand({
 
         const arr = simHash.compute_bitarray(question)
         let hash = 0
-        for (let i = 0; i < 48; i++) hash |= arr[i]! ** i
+        for (let i = 0; i < 50; i++) if (arr[i]) hash += 2 ** i
 
         const { response } = s.command.is
 
         const closest = recentQuestions.getClosest(hash)
         if (closest && Math.abs(closest.key - hash) <= hash * MaxDiffPercent) {
             recentQuestions.set(hash, closest.value)
-            // If the closest question is within 10% of the hash, return the same response
+            // If the closest question is within MaxDiffPercent of the hash, return the same response
             return await actions.reply({
                 content: string(response[closest.value]!),
             })
