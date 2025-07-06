@@ -30,6 +30,7 @@ bot.on(EventName, async intr => {
         })
 
     const ctx: ChatCommandExecuteContext<CommandInteraction<any>> = {
+        commandName: name,
         executor: intr.user,
         trigger: intr,
     }

@@ -267,6 +267,11 @@ export interface ChatCommandExecuteContext<
     Trigger extends CommandInteraction | Message = CommandInteraction | Message,
 > {
     /**
+     * The command name that triggered the execution.
+     * This can be the command name, an alias, or an empty string if it's a {@link CommandTriggers.ChatMessagePrefixless} command.
+     */
+    commandName: string
+    /**
      * The trigger that executed the command.
      */
     trigger: Trigger

@@ -64,6 +64,7 @@ bot.on(EventName, async msg => {
     const args = content.slice(cmdName.length)
 
     const ctx: ChatCommandExecuteContext<any> = {
+        commandName: triggeredByReplyMentions ? '' : cmdName,
         executor: msg.author,
         trigger: msg,
     }
