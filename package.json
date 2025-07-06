@@ -27,7 +27,6 @@
     "zlib-sync"
   ],
   "dependencies": {
-    "@counterrealist/simhash": "^1.0.1",
     "@sapphire/duration": "^1.2.0",
     "chalk-template": "^1.1.0",
     "drizzle-orm": "^0.44.2",

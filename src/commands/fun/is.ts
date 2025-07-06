@@ -3,15 +3,10 @@ import { ApplicationCommandOptionTypes, type Message } from 'oceanic.js'
 import { setTimeout as setTimeoutPromise } from 'timers/promises'
 import { ChatCommand } from '~/classes/commands/ChatCommand'
 import { CommandTriggers, DefaultCommandContexts, DefaultCommandIntegrationTypes } from '~/classes/commands/Command'
-import { SortedLRUMap } from '~/classes/SortedLRUMap'
 import { s, string } from '~/strings'
-import { SimHashNgramSize, simHash } from '~/utils/hashes'
 
 // Message -> Response Index
 const recentResponses = new WeakMap<Message, number>()
-// Hash -> Response Index
-const recentQuestions = new SortedLRUMap<number>(100)
-const MaxDiffPercent = 0.75 // 75% difference
 
 const MaxConfirmationResponseDistance = 3
 const ConfirmationResponses = [
@@ -86,6 +81,7 @@ export default new ChatCommand({
 
         if (trigger.messageReference && trigger.channel)
             // The user is asking us to confirm a previous response
+            // So we double down on it, YEAH!
             for (const response of ConfirmationResponses)
                 if (distance(question, response) <= MaxConfirmationResponseDistance) {
                     // Attempt to get message from cache
@@ -103,32 +99,14 @@ export default new ChatCommand({
                     }
                 }
 
-        // Always pad the question so it's always more than SimHashNgramSize characters long
-        // And to ensure the hash is similar for a similar question without padding
-        question += ' '.repeat(SimHashNgramSize)
-
-        const arr = simHash.compute_bitarray(question)
-        let hash = 0
-        for (let i = 0; i < 50; i++) if (arr[i]) hash += 2 ** i
-
         const { response } = s.command.is
-
-        const closest = recentQuestions.getClosest(hash)
-        if (closest && Math.abs(closest.key - hash) <= hash * MaxDiffPercent) {
-            recentQuestions.set(hash, closest.value)
-            // If the closest question is within MaxDiffPercent of the hash, return the same response
-            return await actions.reply({
-                content: string(response[closest.value]!),
-            })
-        }
-
         const idx = Math.floor(Math.random() * response.length)
-        recentQuestions.set(hash, idx)
 
-        const msg = await actions.reply({
-            content: string(s.command.is.response[idx]!),
-        })
-
-        recentResponses.set(msg, idx)
+        recentResponses.set(
+            await actions.reply({
+                content: string(response[idx]!),
+            }),
+            idx,
+        )
     },
 })

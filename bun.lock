@@ -10,6 +10,7 @@
         "drizzle-orm": "^0.44.2",
         "fastest-levenshtein": "^1.0.16",
         "oceanic.js": "^1.12.0",
+        "tlsh_ts": "^0.1.2",
       },
       "devDependencies": {
         "@biomejs/biome": "^2.0.6",
@@ -621,6 +622,8 @@
     "tldts": ["tldts@7.0.10", "", { "dependencies": { "tldts-core": "^7.0.10" }, "bin": { "tldts": "bin/cli.js" } }, "sha512-n6xyIpjWEn6Ikpkir7zVdxNoRO3ZrL+x65ztg/JYoIMoPkpRQ87W4RxbNiso+axhF2zTAzwR+NJJE3NJazLb6Q=="],
 
     "tldts-core": ["tldts-core@7.0.10", "", {}, "sha512-z7PilFbUHwd+IlQ72D0aHDpqykUUpe9yvwa5k/rFvFLmpvNmWqHEIHoSYwE5sA5LZU4bTTIjhDZEjURHc8f2ag=="],
+
+    "tlsh_ts": ["tlsh_ts@0.1.2", "", {}, "sha512-ohpSxVbj/cIqFyaCzLMiLEpdrFpuD/fovaNp/21p6WEW59LUc5rcpnboZolBSMxW0BGFjWe/bYOI2CelpoZv4Q=="],
 
     "tmp": ["tmp@0.0.33", "", { "dependencies": { "os-tmpdir": "~1.0.2" } }, "sha512-jRCJlojKnZ3addtTOjdIqoRuPEKBvNXcGYqzO6zWZX8KfKEpnGY5jfggJQ3EjKuu8D4bJRr0y+cYJFmYbImXGw=="],
 
