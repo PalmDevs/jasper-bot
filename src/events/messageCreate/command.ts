@@ -1,4 +1,4 @@
-import { InteractionContextTypes } from 'oceanic.js'
+import { InteractionContextTypes, type Message } from 'oceanic.js'
 import { inspect } from 'util'
 import { ChatCommand } from '~/classes/commands/ChatCommand'
 import { Command, CommandTriggers } from '~/classes/commands/Command'
@@ -15,29 +15,10 @@ const LogTag = `events/${EventName}/${EventHandlerName}`
 bot.on(EventName, async msg => {
     if (msg.author.bot) return
 
-    let triggeredByReplyMentions = false
-    let prefixLength = 0
+    const [content, triggeredByReplyMentions] = getActualMessageContentAndTriggerInfo(msg)
+    if (content === undefined) return
 
-    if (config.prefix.mentions) {
-        const mention = `<@${msg.client.user.id}>`
-        if (msg.content.startsWith(mention)) prefixLength = mention.length
-    }
-
-    if (!prefixLength)
-        for (const prefix of config.prefix.matches) {
-            if (msg.content.startsWith(prefix)) {
-                prefixLength = prefix.length
-                break
-            }
-        }
-
-    if (!prefixLength && msg.mentions.users.some(u => u.id === msg.client.user.id)) triggeredByReplyMentions = true
-
-    if (!prefixLength && !triggeredByReplyMentions) return
-
-    const content = (prefixLength ? msg.content.slice(prefixLength) : msg.content).trimStart()
     let cmdName = ''
-
     let i = 0
     while (i < content.length) {
         const char = content[i++]
@@ -81,3 +62,37 @@ bot.on(EventName, async msg => {
         await handleChatCommandError(err, cmd, msg, actions)
     }
 })
+
+function getActualMessageContentAndTriggerInfo(msg: Message): [] | [string, boolean] {
+    const { content } = msg
+    let triggeredByReplyMentions = false
+    let prefixLength = 0
+
+    if (config.prefix.mentions) {
+        const mention = `<@${msg.client.user.id}>`
+        if (content.startsWith(mention)) prefixLength = mention.length
+
+        if (!prefixLength && msg.mentions.users.some(u => u.id === msg.client.user.id)) {
+            triggeredByReplyMentions = true
+            // If we don't have a message reference, it's a manual mention, so we remove the last mention from the content
+            if (!msg.messageReference) {
+                const lastMentionIndex = content.lastIndexOf(mention)
+                if (lastMentionIndex >= 0)
+                    return [content.substring(0, lastMentionIndex).trimEnd(), triggeredByReplyMentions]
+            }
+        }
+
+        return [content.slice(prefixLength).trimStart(), triggeredByReplyMentions]
+    }
+
+    for (const prefix of config.prefix.matches) {
+        if (content.startsWith(prefix)) {
+            prefixLength = prefix.length
+            break
+        }
+    }
+
+    if (!prefixLength) return []
+
+    return [content.slice(prefixLength).trimStart(), triggeredByReplyMentions]
+}
