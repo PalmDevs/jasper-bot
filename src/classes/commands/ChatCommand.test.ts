@@ -7,6 +7,7 @@ import {
 } from 'oceanic.js'
 import {
     createBasicCommand,
+    createMockChatCommandContext,
     createMockExecutor,
     createMockMessage,
     createMockTrigger,
@@ -67,10 +68,7 @@ describe('ChatCommand', () => {
     describe('canExecute', () => {
         test('returns true if no access is defined', async () => {
             const cmd = createBasicCommand()
-            const context = {
-                trigger: createMockTrigger(),
-                executor: createMockExecutor(),
-            }
+            const context = createMockChatCommandContext()
 
             const result = await ChatCommand.canExecute(cmd, context)
             expect(result).toBe(true)
@@ -84,17 +82,15 @@ describe('ChatCommand', () => {
                 },
             })
 
-            const context1 = {
-                trigger: createMockTrigger(),
+            const context1 = createMockChatCommandContext({
                 executor: createMockExecutor('123'),
-            }
+            })
             const result1 = await ChatCommand.canExecute(cmd, context1)
             expect(result1).toBe(true)
 
-            const context2 = {
-                trigger: createMockTrigger(),
+            const context2 = createMockChatCommandContext({
                 executor: createMockExecutor('456'),
-            }
+            })
             const result2 = await ChatCommand.canExecute(cmd, context2)
             expect(result2).toBe(false)
         })
@@ -107,17 +103,15 @@ describe('ChatCommand', () => {
                 },
             })
 
-            const context1 = {
+            const context1 = createMockChatCommandContext({
                 trigger: createMockTrigger({ channelID: '456' }),
-                executor: createMockExecutor(),
-            }
+            })
             const result1 = await ChatCommand.canExecute(cmd, context1)
             expect(result1).toBe(true)
 
-            const context2 = {
+            const context2 = createMockChatCommandContext({
                 trigger: createMockTrigger({ channelID: '789' }),
-                executor: createMockExecutor(),
-            }
+            })
             const result2 = await ChatCommand.canExecute(cmd, context2)
             expect(result2).toBe(false)
         })
@@ -130,17 +124,15 @@ describe('ChatCommand', () => {
                 },
             })
 
-            const context1 = {
+            const context1 = createMockChatCommandContext({
                 trigger: createMockTrigger({ guildID: '789' }),
-                executor: createMockExecutor(),
-            }
+            })
             const result1 = await ChatCommand.canExecute(cmd, context1)
             expect(result1).toBe(true)
 
-            const context2 = {
+            const context2 = createMockChatCommandContext({
                 trigger: createMockTrigger({ guildID: '123' }),
-                executor: createMockExecutor(),
-            }
+            })
             const result2 = await ChatCommand.canExecute(cmd, context2)
             expect(result2).toBe(false)
         })
@@ -154,10 +146,7 @@ describe('ChatCommand', () => {
                 },
             })
 
-            const context = {
-                trigger: createMockTrigger(),
-                executor: createMockExecutor(),
-            }
+            const context = createMockChatCommandContext()
 
             // First test: member doesn't have the required permission (2n & 1n !== 1n)
             const result1 = await ChatCommand.canExecute(cmd, context)
@@ -178,10 +167,7 @@ describe('ChatCommand', () => {
                 },
             })
 
-            const context = {
-                trigger: createMockTrigger(),
-                executor: createMockExecutor(),
-            }
+            const context = createMockChatCommandContext()
 
             // Should pass because mockMember has role '123'
             const result1 = await ChatCommand.canExecute(cmd, context)
@@ -210,10 +196,7 @@ describe('ChatCommand', () => {
                 },
             })
 
-            const context = {
-                trigger: createMockTrigger(),
-                executor: createMockExecutor(),
-            }
+            const context = createMockChatCommandContext()
             const result1 = await ChatCommand.canExecute(cmd, context)
             expect(result1).toBe(true)
 
@@ -235,10 +218,7 @@ describe('ChatCommand', () => {
                 },
             })
 
-            const context = {
-                trigger: createMockTrigger(),
-                executor: createMockExecutor(),
-            }
+            const context = createMockChatCommandContext()
             const result1 = await ChatCommand.canExecute(cmd, context)
             expect(result1).toBe(true)
 

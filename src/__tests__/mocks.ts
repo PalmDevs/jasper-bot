@@ -10,7 +10,7 @@ import {
     type TextChannel,
     type User,
 } from 'oceanic.js'
-import { type AnyChatCommand, ChatCommand } from '~/classes/commands/ChatCommand'
+import { type AnyChatCommand, ChatCommand, type ChatCommandExecuteContext } from '~/classes/commands/ChatCommand'
 import { CommandTriggers } from '~/classes/commands/Command'
 
 export const createMockExecutor = (id = '123') => ({ id }) as User
@@ -37,12 +37,19 @@ export const createBasicCommand = (
         name: 'test',
         description: 'test command',
         options: [],
-        triggers: CommandTriggers.PlatformImplementation,
+        triggers: [CommandTriggers.PlatformImplementation],
         contexts: [InteractionContextTypes.GUILD],
         integrationTypes: [ApplicationIntegrationTypes.GUILD_INSTALL],
         execute: () => {},
         ...overrides,
     })
+
+export const createMockChatCommandContext = (overrides?: Partial<ChatCommandExecuteContext>) => ({
+    commandName: 'test',
+    trigger: createMockTrigger(),
+    executor: createMockExecutor(),
+    ...overrides,
+})
 
 export const MockChannel = {
     id: '123',
