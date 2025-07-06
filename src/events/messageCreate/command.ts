@@ -66,13 +66,12 @@ bot.on(EventName, async msg => {
 function getActualMessageContentAndTriggerInfo(msg: Message): [] | [string, boolean] {
     const { content } = msg
     let triggeredByReplyMentions = false
-    let prefixLength = 0
 
     if (config.prefix.mentions) {
         const mention = `<@${msg.client.user.id}>`
-        if (content.startsWith(mention)) prefixLength = mention.length
+        if (content.startsWith(mention)) return [content.slice(mention.length).trimStart(), triggeredByReplyMentions]
 
-        if (!prefixLength && msg.mentions.users.some(u => u.id === msg.client.user.id)) {
+        if (msg.mentions.users.some(u => u.id === msg.client.user.id)) {
             triggeredByReplyMentions = true
             // If we don't have a message reference, it's a manual mention, so we remove the last mention from the content
             if (!msg.messageReference) {
@@ -81,9 +80,9 @@ function getActualMessageContentAndTriggerInfo(msg: Message): [] | [string, bool
                     return [content.substring(0, lastMentionIndex).trimEnd(), triggeredByReplyMentions]
             }
         }
-
-        return [content.slice(prefixLength).trimStart(), triggeredByReplyMentions]
     }
+
+    let prefixLength = 0
 
     for (const prefix of config.prefix.matches) {
         if (content.startsWith(prefix)) {

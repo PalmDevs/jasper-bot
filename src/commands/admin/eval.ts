@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionTypes, InteractionContextTypes } from 'oceanic.js'
+import { ApplicationCommandOptionTypes, InteractionContextTypes, MessageFlags } from 'oceanic.js'
 import { inspect } from 'util'
 import { ChatCommand } from '~/classes/commands/ChatCommand'
 import { DefaultCommandIntegrationTypes, DefaultCommandTriggers } from '~/classes/commands/Command'
@@ -57,6 +57,7 @@ export default new ChatCommand({
                           },
                       ]
                     : undefined,
+            flags: MessageFlags.EPHEMERAL,
         })
     },
 })
