@@ -192,7 +192,7 @@ type ContextBasedOnTriggersAndContexts<
     _ChannelType extends AnyTextableChannel | AnyTextableGuildChannel | Uncached = ContextsToChannelType<Contexts>,
 > = Triggers[number] extends typeof CommandTriggers.PlatformImplementation
     ? CommandInteraction<_ChannelType>
-    : Triggers[number] extends typeof CommandTriggers.ChatMessage
+    : Triggers[number] extends typeof CommandTriggers.ChatMessage | typeof CommandTriggers.ChatMessagePrefixless
       ? Message<_ChannelType>
       : CommandInteraction<_ChannelType> | Message<_ChannelType>
 
