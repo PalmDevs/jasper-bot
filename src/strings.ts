@@ -108,6 +108,7 @@ const STRINGS = {
             success: (amount: number) => `Purged ${amount} messages.`,
         },
         register: {
+            info: (count: number) => `Registering ${count} commands:`,
             success: 'Slash commands registered successfully.',
         },
         reply: {

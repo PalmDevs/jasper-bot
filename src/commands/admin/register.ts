@@ -1,6 +1,12 @@
-import { ApplicationIntegrationTypes, MessageFlags } from 'oceanic.js'
+import { InteractionContextTypes, MessageFlags } from 'oceanic.js'
 import { ChatCommand } from '~/classes/commands/ChatCommand'
-import { Command, CommandTriggers, DefaultCommandContexts, DefaultCommandTriggers } from '~/classes/commands/Command'
+import {
+    Command,
+    CommandTriggers,
+    DefaultCommandIntegrationTypes,
+    DefaultCommandTriggers,
+} from '~/classes/commands/Command'
+import { log } from '~/context'
 import { s, string } from '~/strings'
 import { AdminOnlyAccess } from '~/utils/commands'
 import { cmds } from '../_all'
@@ -11,15 +17,17 @@ export default new ChatCommand({
     aliases: [],
     options: [],
     triggers: DefaultCommandTriggers,
-    contexts: DefaultCommandContexts,
-    integrationTypes: [ApplicationIntegrationTypes.USER_INSTALL],
+    contexts: [InteractionContextTypes.BOT_DM],
+    integrationTypes: DefaultCommandIntegrationTypes,
     access: AdminOnlyAccess,
     async execute(context, _options, actions) {
-        await context.trigger.client.application.bulkEditGlobalCommands(
-            cmds
-                .filter(cmd => Command.canExecuteViaTrigger(cmd, CommandTriggers.PlatformImplementation))
-                .map(cmd => (cmd.constructor as typeof Command).toApplicationCommand(cmd)),
-        )
+        const appCommands = cmds
+            .filter(cmd => Command.canExecuteViaTrigger(cmd, CommandTriggers.PlatformImplementation))
+            .map(cmd => (cmd.constructor as typeof Command).toApplicationCommand(cmd))
+
+        await context.trigger.client.application.bulkEditGlobalCommands(appCommands)
+
+        log.info('commands/admin/register', string(s.command.register.info, appCommands.length), appCommands)
 
         await actions.reply({
             content: string(s.command.register.success),

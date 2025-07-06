@@ -1,6 +1,6 @@
-import { ApplicationIntegrationTypes, MessageFlags } from 'oceanic.js'
+import { InteractionContextTypes, MessageFlags } from 'oceanic.js'
 import { ChatCommand } from '~/classes/commands/ChatCommand'
-import { DefaultCommandContexts, DefaultCommandTriggers } from '~/classes/commands/Command'
+import { DefaultCommandIntegrationTypes, DefaultCommandTriggers } from '~/classes/commands/Command'
 import { log } from '~/context'
 import { s, string } from '~/strings'
 import { AdminOnlyAccess } from '~/utils/commands'
@@ -11,8 +11,8 @@ export default new ChatCommand({
     aliases: ['die', 'kys'],
     options: [],
     triggers: DefaultCommandTriggers,
-    contexts: DefaultCommandContexts,
-    integrationTypes: [ApplicationIntegrationTypes.USER_INSTALL],
+    contexts: [InteractionContextTypes.BOT_DM],
+    integrationTypes: DefaultCommandIntegrationTypes,
     access: AdminOnlyAccess,
     async execute(context, _options, actions) {
         const { executor } = context

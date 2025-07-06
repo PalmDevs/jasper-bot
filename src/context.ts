@@ -33,6 +33,7 @@ export const bot = new Client({
         intents:
             Intents.GUILDS |
             Intents.GUILD_MESSAGES |
+            Intents.DIRECT_MESSAGES |
             Intents.MESSAGE_CONTENT |
             Intents.GUILD_MESSAGE_REACTIONS |
             Intents.GUILD_MEMBERS,

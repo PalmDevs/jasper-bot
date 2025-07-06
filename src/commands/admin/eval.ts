@@ -1,7 +1,7 @@
-import { ApplicationCommandOptionTypes, ApplicationIntegrationTypes, MessageFlags } from 'oceanic.js'
+import { ApplicationCommandOptionTypes, InteractionContextTypes } from 'oceanic.js'
 import { inspect } from 'util'
 import { ChatCommand } from '~/classes/commands/ChatCommand'
-import { DefaultCommandContexts, DefaultCommandTriggers } from '~/classes/commands/Command'
+import { DefaultCommandIntegrationTypes, DefaultCommandTriggers } from '~/classes/commands/Command'
 import { s, string } from '~/strings'
 import { AdminOnlyAccess } from '~/utils/commands'
 import { embed } from '~/utils/embeds'
@@ -25,8 +25,8 @@ export default new ChatCommand({
         },
     ],
     triggers: DefaultCommandTriggers,
-    contexts: DefaultCommandContexts,
-    integrationTypes: [ApplicationIntegrationTypes.USER_INSTALL],
+    contexts: [InteractionContextTypes.BOT_DM],
+    integrationTypes: DefaultCommandIntegrationTypes,
     access: AdminOnlyAccess,
     // biome-ignore lint/correctness/noUnusedFunctionParameters: To be used in eval()
     async execute(context, options, actions) {
@@ -57,7 +57,6 @@ export default new ChatCommand({
                           },
                       ]
                     : undefined,
-            flags: MessageFlags.EPHEMERAL,
         })
     },
 })
