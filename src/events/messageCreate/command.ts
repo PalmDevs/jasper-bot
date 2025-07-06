@@ -77,7 +77,11 @@ function getActualMessageContentAndTriggerInfo(msg: Message): [] | [string, bool
             if (!msg.messageReference) {
                 const lastMentionIndex = content.lastIndexOf(mention)
                 if (lastMentionIndex >= 0)
-                    return [content.substring(0, lastMentionIndex).trimEnd(), triggeredByReplyMentions]
+                    return [
+                        content.substring(0, lastMentionIndex) +
+                            content.substring(lastMentionIndex + mention.length, content.length).trimEnd(),
+                        triggeredByReplyMentions,
+                    ]
             }
 
             return [content, triggeredByReplyMentions]
