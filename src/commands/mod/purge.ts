@@ -6,7 +6,7 @@ import {
 } from 'oceanic.js'
 import { ChatCommand } from '~/classes/commands/ChatCommand'
 import { ChatCommandOptionTypes } from '~/classes/commands/ChatCommandConstants'
-import { AnyCommandTriggers } from '~/classes/commands/Command'
+import { DefaultCommandTriggers } from '~/classes/commands/Command'
 import { s, string } from '~/strings'
 import { ModeratorOnlyAccess } from '~/utils/commands'
 import { embed } from '~/utils/embeds'
@@ -32,7 +32,7 @@ export default new ChatCommand({
         },
     ],
     access: ModeratorOnlyAccess,
-    triggers: AnyCommandTriggers,
+    triggers: DefaultCommandTriggers,
     contexts: [InteractionContextTypes.GUILD],
     integrationTypes: [ApplicationIntegrationTypes.GUILD_INSTALL],
     async execute(context, { amount, before }, actions) {

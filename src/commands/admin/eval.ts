@@ -1,7 +1,7 @@
 import { ApplicationCommandOptionTypes, ApplicationIntegrationTypes, MessageFlags } from 'oceanic.js'
 import { inspect } from 'util'
 import { ChatCommand } from '~/classes/commands/ChatCommand'
-import { AnyCommandContexts, AnyCommandTriggers } from '~/classes/commands/Command'
+import { DefaultCommandContexts, DefaultCommandTriggers } from '~/classes/commands/Command'
 import { s, string } from '~/strings'
 import { AdminOnlyAccess } from '~/utils/commands'
 import { embed } from '~/utils/embeds'
@@ -24,8 +24,8 @@ export default new ChatCommand({
             required: false,
         },
     ],
-    triggers: AnyCommandTriggers,
-    contexts: AnyCommandContexts,
+    triggers: DefaultCommandTriggers,
+    contexts: DefaultCommandContexts,
     integrationTypes: [ApplicationIntegrationTypes.USER_INSTALL],
     access: AdminOnlyAccess,
     // biome-ignore lint/correctness/noUnusedFunctionParameters: To be used in eval()

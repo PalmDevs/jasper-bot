@@ -1,6 +1,6 @@
 import { ApplicationCommandOptionTypes, ApplicationIntegrationTypes } from 'oceanic.js'
 import { ChatCommand } from '~/classes/commands/ChatCommand'
-import { AnyCommandContexts, AnyCommandTriggers } from '~/classes/commands/Command'
+import { DefaultCommandContexts, DefaultCommandTriggers } from '~/classes/commands/Command'
 import { SelfError, UserError } from '~/classes/Error'
 import { AdminOnlyAccess } from '~/utils/commands'
 
@@ -29,8 +29,8 @@ export default new ChatCommand({
             required: true,
         },
     ],
-    triggers: AnyCommandTriggers,
-    contexts: AnyCommandContexts,
+    triggers: DefaultCommandTriggers,
+    contexts: DefaultCommandContexts,
     integrationTypes: [ApplicationIntegrationTypes.USER_INSTALL],
     access: AdminOnlyAccess,
     async execute(_context, options) {

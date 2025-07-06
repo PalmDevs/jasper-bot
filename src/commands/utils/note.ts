@@ -10,7 +10,7 @@ import {
     ChatCommandOptionsWithReadMessageReferenceMode,
     ChatCommandOptionTypes,
 } from '~/classes/commands/ChatCommandConstants'
-import { AnyCommandTriggers } from '~/classes/commands/Command'
+import { DefaultCommandTriggers } from '~/classes/commands/Command'
 import { UserError } from '~/classes/Error'
 import { bot, config } from '~/context'
 import { s, string } from '~/strings'
@@ -33,7 +33,7 @@ export default new ChatCommand({
             readMessageReference: ChatCommandOptionsWithReadMessageReferenceMode.Fallback,
         },
     ],
-    triggers: AnyCommandTriggers,
+    triggers: DefaultCommandTriggers,
     contexts: [InteractionContextTypes.GUILD],
     integrationTypes: [ApplicationIntegrationTypes.GUILD_INSTALL],
     async execute(context, options, actions) {

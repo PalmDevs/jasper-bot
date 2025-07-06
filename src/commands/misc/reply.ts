@@ -32,7 +32,7 @@ export default new ChatCommand({
         },
     ],
     access: ModeratorOnlyAccess,
-    triggers: CommandTriggers.PlatformImplementation,
+    triggers: [CommandTriggers.PlatformImplementation],
     contexts: [InteractionContextTypes.GUILD],
     integrationTypes: [ApplicationIntegrationTypes.GUILD_INSTALL],
     async execute(context, options) {

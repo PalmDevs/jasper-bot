@@ -1,7 +1,7 @@
 import { ApplicationCommandOptionTypes } from 'oceanic.js'
 import { setTimeout as setTimeoutPromise } from 'timers/promises'
 import { ChatCommand } from '~/classes/commands/ChatCommand'
-import { AnyCommandContexts, AnyCommandIntegrationTypes, CommandTriggers } from '~/classes/commands/Command'
+import { CommandTriggers, DefaultCommandContexts, DefaultCommandIntegrationTypes } from '~/classes/commands/Command'
 import { s, string } from '~/strings'
 
 export default new ChatCommand({
@@ -35,9 +35,9 @@ export default new ChatCommand({
             required: false,
         },
     ],
-    triggers: CommandTriggers.ChatMessage,
-    contexts: AnyCommandContexts,
-    integrationTypes: AnyCommandIntegrationTypes,
+    triggers: [CommandTriggers.ChatMessage, CommandTriggers.ChatMessagePrefixless],
+    contexts: DefaultCommandContexts,
+    integrationTypes: DefaultCommandIntegrationTypes,
     async execute(context, { question }, actions) {
         if (!question) return
 

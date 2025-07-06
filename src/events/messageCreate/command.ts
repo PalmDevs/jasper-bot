@@ -15,6 +15,7 @@ const LogTag = `events/${EventName}/${EventHandlerName}`
 bot.on(EventName, async msg => {
     if (msg.author.bot) return
 
+    let triggeredByReplyMentions = false
     let prefixLength = 0
 
     if (config.prefix.mentions) {
@@ -30,9 +31,11 @@ bot.on(EventName, async msg => {
             }
         }
 
-    if (!prefixLength) return
+    if (!prefixLength && msg.mentions.users.some(u => u.id === msg.client.user.id)) triggeredByReplyMentions = true
 
-    const content = msg.content.slice(prefixLength).trimStart()
+    if (!prefixLength && !triggeredByReplyMentions) return
+
+    const content = (prefixLength ? msg.content.slice(prefixLength) : msg.content).trimStart()
     let cmdName = ''
 
     let i = 0
@@ -50,7 +53,10 @@ bot.on(EventName, async msg => {
         return log.error(LogTag, `Command ${cmdName} is not a chat command!`, inspect(cmd))
 
     if (
-        !Command.canExecuteViaTrigger(cmd, CommandTriggers.ChatMessage) ||
+        !Command.canExecuteViaTrigger(
+            cmd,
+            triggeredByReplyMentions ? CommandTriggers.ChatMessagePrefixless : CommandTriggers.ChatMessage,
+        ) ||
         !Command.canExecuteInContext(cmd, msg.guildID ? InteractionContextTypes.GUILD : InteractionContextTypes.BOT_DM)
     )
         return

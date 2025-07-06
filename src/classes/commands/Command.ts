@@ -1,9 +1,9 @@
 import { ApplicationIntegrationTypes, type CreateApplicationCommandOptions, InteractionContextTypes } from 'oceanic.js'
 
-export type AnyCommand = Command<BitFlagDictValue<typeof CommandTriggers>, InteractionContextTypes[]>
+export type AnyCommand = Command<CommandTriggers, InteractionContextTypes[]>
 
 export abstract class Command<
-    const Triggers extends BitFlagDictValue<typeof CommandTriggers>,
+    const Triggers extends CommandTriggers,
     const Contexts extends InteractionContextTypes[],
 > {
     name: string
@@ -43,15 +43,12 @@ export abstract class Command<
         return contexts.includes(context)
     }
 
-    static canExecuteViaTrigger({ triggers }: AnyCommand, trigger: number): boolean {
-        return Boolean(triggers & trigger)
+    static canExecuteViaTrigger({ triggers }: AnyCommand, trigger: CommandTrigger): boolean {
+        return triggers.includes(trigger)
     }
 }
 
-export interface CreateCommandOptions<
-    Triggers extends BitFlagDictValue<typeof CommandTriggers>,
-    Contexts extends InteractionContextTypes[],
-> {
+export interface CreateCommandOptions<Triggers extends CommandTriggers, Contexts extends InteractionContextTypes[]> {
     name: string
     description: string
     aliases?: string[]
@@ -101,29 +98,38 @@ export interface CommandAccess {
     match: number
 }
 
-export type CommandTriggers = BitFlagDictValue<typeof CommandTriggers>
+export type CommandTrigger = (typeof CommandTriggers)[keyof typeof CommandTriggers]
+
+export type CommandTriggers = CommandTrigger[]
 
 export const CommandTriggers = {
     /**
-     * Triggered by Discord's implementation.
+     * Triggered by Discord's implementation (aka. slash commands).
      */
     PlatformImplementation: 1,
     /**
      * Triggered by messages with prefixes or mentions.
      */
     ChatMessage: 2,
+    /**
+     * Triggered by messages without prefixes or mentions, such as message replies.
+     */
+    ChatMessagePrefixless: 3,
 } as const
 
 export type CommandContexts = InteractionContextTypes[]
 
-export const AnyCommandTriggers = CommandTriggers.PlatformImplementation | CommandTriggers.ChatMessage
+export const DefaultCommandTriggers = [
+    CommandTriggers.PlatformImplementation,
+    CommandTriggers.ChatMessage,
+] as const satisfies CommandTriggers
 
-export const AnyCommandContexts = [
+export const DefaultCommandContexts = [
     InteractionContextTypes.GUILD,
     InteractionContextTypes.BOT_DM,
 ] as const satisfies Array<InteractionContextTypes>
 
-export const AnyCommandIntegrationTypes = [
+export const DefaultCommandIntegrationTypes = [
     ApplicationIntegrationTypes.GUILD_INSTALL,
     ApplicationIntegrationTypes.USER_INSTALL,
 ] as const satisfies Array<ApplicationIntegrationTypes>

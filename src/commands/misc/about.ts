@@ -1,6 +1,6 @@
 import { MessageFlags } from 'oceanic.js'
 import { ChatCommand } from '~/classes/commands/ChatCommand'
-import { AnyCommandContexts, AnyCommandIntegrationTypes, AnyCommandTriggers } from '~/classes/commands/Command'
+import { CommandTriggers, DefaultCommandContexts, DefaultCommandIntegrationTypes } from '~/classes/commands/Command'
 import { Product } from '~/constants'
 import { s, string } from '~/strings'
 import { embed, field } from '~/utils/embeds'
@@ -10,9 +10,13 @@ export default new ChatCommand({
     description: 'Who am I?',
     aliases: ['who', 'who?'],
     options: [],
-    triggers: AnyCommandTriggers,
-    contexts: AnyCommandContexts,
-    integrationTypes: AnyCommandIntegrationTypes,
+    triggers: [
+        CommandTriggers.PlatformImplementation,
+        CommandTriggers.ChatMessage,
+        CommandTriggers.ChatMessagePrefixless,
+    ],
+    contexts: DefaultCommandContexts,
+    integrationTypes: DefaultCommandIntegrationTypes,
     async execute(context, _options, actions) {
         const { client } = context.trigger
         const started = Math.ceil(client.startTime / 1000)

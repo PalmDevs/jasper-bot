@@ -51,7 +51,7 @@ describe('ChatCommand', () => {
     })
 
     test('canExecuteViaTrigger returns correct boolean', () => {
-        const cmd = createBasicCommand({ triggers: CommandTriggers.PlatformImplementation })
+        const cmd = createBasicCommand({ triggers: [CommandTriggers.PlatformImplementation] })
 
         expect(ChatCommand.canExecuteViaTrigger(cmd, CommandTriggers.PlatformImplementation)).toBe(true)
         expect(ChatCommand.canExecuteViaTrigger(cmd, CommandTriggers.ChatMessage)).toBe(false)

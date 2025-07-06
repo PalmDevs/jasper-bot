@@ -1,7 +1,7 @@
 import { ApplicationCommandOptionTypes, ApplicationIntegrationTypes, InteractionContextTypes } from 'oceanic.js'
 import { ChatCommand } from '~/classes/commands/ChatCommand'
 import { ChatCommandOptionsWithReadMessageReferenceMode } from '~/classes/commands/ChatCommandConstants'
-import { AnyCommandTriggers } from '~/classes/commands/Command'
+import { DefaultCommandTriggers } from '~/classes/commands/Command'
 import { Illustrations } from '~/constants'
 import { s, string } from '~/strings'
 import { ModeratorOnlyAccess } from '~/utils/commands'
@@ -56,7 +56,7 @@ export default new ChatCommand({
         },
     ],
     access: ModeratorOnlyAccess,
-    triggers: AnyCommandTriggers,
+    triggers: DefaultCommandTriggers,
     contexts: [InteractionContextTypes.GUILD],
     integrationTypes: [ApplicationIntegrationTypes.GUILD_INSTALL],
     async execute(context, options, actions) {

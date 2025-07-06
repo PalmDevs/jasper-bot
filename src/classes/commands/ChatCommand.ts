@@ -38,7 +38,7 @@ import {
 const { optionsFromInteraction, optionsFromMessage } = await import('./ChatCommandOptionsProcessor')
 
 export class ChatCommand<
-    const Triggers extends BitFlagDictValue<typeof CommandTriggers>,
+    const Triggers extends CommandTriggers,
     const Contexts extends InteractionContextTypes[],
     const Options extends ChatCommandOptions[],
     const ExecuteContext extends ChatCommandExecuteContext<ContextBasedOnTriggersAndContexts<Triggers, Contexts>>,
@@ -184,17 +184,15 @@ async function* createAccessChecks(
 }
 
 type ContextsToChannelType<Contexts extends InteractionContextTypes[]> =
-    ArrayElement<Contexts> extends InteractionContextTypes.GUILD
-        ? AnyTextableGuildChannel
-        : AnyTextableChannel | Uncached
+    Contexts[number] extends InteractionContextTypes.GUILD ? AnyTextableGuildChannel : AnyTextableChannel | Uncached
 
 type ContextBasedOnTriggersAndContexts<
-    Triggers extends BitFlagDictValue<typeof CommandTriggers>,
+    Triggers extends CommandTriggers,
     Contexts extends InteractionContextTypes[],
     _ChannelType extends AnyTextableChannel | AnyTextableGuildChannel | Uncached = ContextsToChannelType<Contexts>,
-> = Triggers extends typeof CommandTriggers.PlatformImplementation
+> = Triggers[number] extends typeof CommandTriggers.PlatformImplementation
     ? CommandInteraction<_ChannelType>
-    : Triggers extends typeof CommandTriggers.ChatMessage
+    : Triggers[number] extends typeof CommandTriggers.ChatMessage
       ? Message<_ChannelType>
       : CommandInteraction<_ChannelType> | Message<_ChannelType>
 
@@ -206,7 +204,7 @@ export type AnyChatCommand = ChatCommand<
 >
 
 export interface CreateChatCommandOptions<
-    Triggers extends BitFlagDictValue<typeof CommandTriggers>,
+    Triggers extends CommandTriggers,
     Contexts extends InteractionContextTypes[],
     Options extends ChatCommandOptions[],
     ExecuteContext extends ChatCommandExecuteContext,

@@ -1,6 +1,6 @@
 import { ApplicationIntegrationTypes, MessageFlags } from 'oceanic.js'
 import { ChatCommand } from '~/classes/commands/ChatCommand'
-import { AnyCommandContexts, AnyCommandTriggers, Command, CommandTriggers } from '~/classes/commands/Command'
+import { Command, CommandTriggers, DefaultCommandContexts, DefaultCommandTriggers } from '~/classes/commands/Command'
 import { s, string } from '~/strings'
 import { AdminOnlyAccess } from '~/utils/commands'
 import { cmds } from '../_all'
@@ -10,8 +10,8 @@ export default new ChatCommand({
     description: 'Register commands as application commands.',
     aliases: [],
     options: [],
-    triggers: AnyCommandTriggers,
-    contexts: AnyCommandContexts,
+    triggers: DefaultCommandTriggers,
+    contexts: DefaultCommandContexts,
     integrationTypes: [ApplicationIntegrationTypes.USER_INSTALL],
     access: AdminOnlyAccess,
     async execute(context, _options, actions) {

@@ -1,7 +1,11 @@
 import { ApplicationCommandOptionTypes, MessageFlags } from 'oceanic.js'
 import { ChatCommand } from '~/classes/commands/ChatCommand'
 import { ChatCommandOptionsWithReadMessageReferenceMode } from '~/classes/commands/ChatCommandConstants'
-import { AnyCommandContexts, AnyCommandIntegrationTypes, AnyCommandTriggers } from '~/classes/commands/Command'
+import {
+    DefaultCommandContexts,
+    DefaultCommandIntegrationTypes,
+    DefaultCommandTriggers,
+} from '~/classes/commands/Command'
 
 export default new ChatCommand({
     name: 'avatar',
@@ -15,9 +19,9 @@ export default new ChatCommand({
             readMessageReference: ChatCommandOptionsWithReadMessageReferenceMode.Fallback,
         },
     ],
-    triggers: AnyCommandTriggers,
-    contexts: AnyCommandContexts,
-    integrationTypes: AnyCommandIntegrationTypes,
+    triggers: DefaultCommandTriggers,
+    contexts: DefaultCommandContexts,
+    integrationTypes: DefaultCommandIntegrationTypes,
     async execute(context, options, actions) {
         await actions.reply({
             content: (options.user ?? context.executor).avatarURL(),
