@@ -16,12 +16,13 @@ const MaxDiffPercent = 0.15 // 15% difference
 const MaxConfirmationResponseDistance = 3
 const ConfirmationResponses = [
     'seriously',
+    'you for real',
     'you sure',
-    'are you sure',
-    'is that ',
-    'are you serious',
-    'are you kidding',
-    'is that really',
+    'that true',
+    'that real',
+    'you serious',
+    'you kidding',
+    'that really',
 ]
 
 export default new ChatCommand({
@@ -69,6 +70,10 @@ export default new ChatCommand({
             .trim()
 
         const { trigger } = context
+        const { channelID, client } = trigger
+
+        await client.rest.channels.sendTyping(channelID)
+        await setTimeoutPromise(1000)
 
         if (trigger.messageReference && trigger.channel)
             // The user is asking us to confirm a previous response
@@ -79,24 +84,23 @@ export default new ChatCommand({
                     if (!msg) return
 
                     const responseIndex = recentResponses.get(msg)
-                    if (responseIndex !== undefined)
-                        return await actions.reply({
-                            content: string(s.command.is.response[responseIndex]!),
+                    if (responseIndex !== undefined) {
+                        const msg = await actions.reply({
+                            content: string(s.command.is.responseConfirm[responseIndex]!, question),
                         })
+
+                        recentResponses.set(msg, responseIndex)
+                        return
+                    }
                 }
 
         // Always pad the question so it's always more than SimHashNgramSize characters long
         // And to ensure the hash is similar for a similar question without padding
         question += ' '.repeat(SimHashNgramSize)
 
-        const { channelID, client } = trigger
-
-        await client.rest.channels.sendTyping(channelID)
-        await setTimeoutPromise(1000)
-
         const arr = simHash.compute_bitarray(question)
         let hash = 0
-        for (let i = 0; i < 48; i++) hash |= arr[i]! << i
+        for (let i = 0; i < 48; i++) hash |= arr[i]! ** i
 
         const { response } = s.command.is
 
