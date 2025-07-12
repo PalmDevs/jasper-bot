@@ -45,9 +45,9 @@ export default new ChatCommand({
         const nickEmbed = embed({
             title: string(s.command.nick.action, member.tag),
             fields: [
-                field(string(s.generic.user), member.mention),
-                field(string(s.generic.moderator), executor.mention, true),
+                field(string(s.generic.user), member.mention, true),
                 field(string(s.generic.nickname), nick || string(s.command.nick.reset), true),
+                field(string(s.generic.moderator), executor.mention),
             ],
         })
 
