@@ -10,6 +10,7 @@ import AboutCommand from './misc/about'
 import ReplyCommand from './misc/reply'
 import BanCommand from './mod/ban'
 import MuteCommand from './mod/mute'
+import NickCommand from './mod/nick'
 import PurgeCommand from './mod/purge'
 import RoleCommand from './mod/role'
 import SlowmodeCommand from './mod/slowmode'
@@ -29,6 +30,7 @@ export const cmds = [
     AboutCommand,
     BanCommand,
     MuteCommand,
+    NickCommand,
     PurgeCommand,
     RoleCommand,
     SlowmodeCommand,

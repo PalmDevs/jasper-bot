@@ -135,6 +135,10 @@ const STRINGS = {
                 'What?',
             ],
         },
+        nick: {
+            action: (tag: string) => `Set nickname for ${tag}`,
+            reset: subtext('(Reset nickname)'),
+        },
         note: {
             noConfig: (guildName: string) => `No notes configured for ${guildName}.`,
             allTitle: (guildName: string) => `Notes in ${guildName}`,
@@ -196,6 +200,7 @@ const STRINGS = {
         expires: 'Expires',
         usage: 'Usage',
         before: 'Before',
+        nickname: 'Nickname',
         command: {
             defaults: {
                 reason: '(No reason provided)',
