@@ -51,10 +51,10 @@ export default new ChatCommand({
     triggers: DefaultCommandTriggers,
     contexts: [InteractionContextTypes.GUILD],
     integrationTypes: [ApplicationIntegrationTypes.GUILD_INSTALL],
-    async execute(context, { user, duration, proof, reason }, actions) {
+    async execute({ executor, trigger }, { user, duration, proof, reason }, actions) {
         duration ??= MaxDuration
 
-        const member = await getMember(context.trigger.guildID, user.id)
+        const member = await getMember(trigger.guildID, user.id)
         if (!member) throw new UserError(string(s.generic.command.errors.userNotInGuild, user.mention))
         if (await isMemberPunishable(member))
             throw new SelfError(string(s.generic.command.errors.memberNotPunishable, member.mention))
@@ -68,10 +68,10 @@ export default new ChatCommand({
 
         const timestamp = Math.ceil(fromNow.getTime() / 1000)
         const muteEmbed = embed({
-            title: `Muted ${member.tag}`,
+            title: string(s.command.mute.action, member.tag),
             fields: [
                 field(string(s.generic.member), member.mention),
-                field(string(s.generic.moderator), context.executor.mention, true),
+                field(string(s.generic.moderator), executor.mention, true),
                 field(string(s.generic.reason), reason ?? subtext(string(s.generic.command.defaults.reason)), true),
                 field(string(s.generic.expires), `<t:${timestamp}> (<t:${timestamp}:R>)`, true),
             ],

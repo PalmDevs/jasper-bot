@@ -48,8 +48,8 @@ export default new ChatCommand({
 
         await channel.deleteMessages(msgs)
 
-        const fields = [field(string(s.generic.moderator), executor.mention, true)]
-        if (before) fields.push(field(string(s.generic.before), before.jumpLink, true))
+        const fields = [field(string(s.generic.moderator), executor.mention)]
+        if (before) fields.unshift(field(string(s.generic.before), before.jumpLink))
 
         const purgeEmbed = embed({
             title: string(s.command.purge.success, amount),

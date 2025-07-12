@@ -4,7 +4,7 @@ import { DefaultCommandTriggers } from '~/classes/commands/Command'
 import { s, string } from '~/strings'
 import { durationOptionResolver, ModeratorOnlyAccess } from '~/utils/commands'
 import { formatDuration } from '~/utils/durations'
-import { embed } from '~/utils/embeds'
+import { embed, field } from '~/utils/embeds'
 import { sendModerationLog } from '~/utils/mod'
 
 const MaxDuration = 216e5
@@ -38,6 +38,7 @@ export default new ChatCommand({
 
         const smEmbed = embed({
             title: string(s.command.slowmode.success, formatDuration(duration.offset)),
+            fields: [field(string(s.generic.moderator), context.executor.mention)],
         })
 
         await sendModerationLog(

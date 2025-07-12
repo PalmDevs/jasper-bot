@@ -70,7 +70,7 @@ export default new ChatCommand({
         else if (options.remove) await client.rest.guilds.removeMemberRole(trigger.guildID!, user.id, role.id, reason)
 
         const roleEmbed = embed({
-            title: string(s.command.role[options.add ? 'added' : 'removed']),
+            title: string(options.add ? s.command.role.added : s.command.role.removed),
             thumbnail: options.add ? Illustrations.RoleAdded : Illustrations.RoleRemoved,
             fields: [
                 field(string(s.generic.user), user.mention, true),

@@ -3,7 +3,7 @@ import { ApplicationCommandOptionTypes } from 'oceanic.js'
 import { ChatCommandOptionTypes } from './classes/commands/ChatCommandConstants'
 import { Emojis } from './constants'
 import { log } from './context'
-import { bold, code, codeblock, emoji } from './utils/formatters'
+import { bold, code, codeblock, emoji, subtext } from './utils/formatters'
 
 interface Strings {
     status: {
@@ -25,6 +25,9 @@ interface Strings {
 
 const STRINGS = {
     command: {
+        ban: {
+            action: (tag: string) => `Banned ${tag}`,
+        },
         is: {
             response: [
                 'Yeah, probably.',
@@ -135,6 +138,9 @@ const STRINGS = {
                 'What?',
             ],
         },
+        mute: {
+            action: (tag: string) => `Muted ${tag}`,
+        },
         nick: {
             action: (tag: string) => `Set nickname for ${tag}`,
             reset: subtext('(Reset nickname)'),
@@ -201,6 +207,7 @@ const STRINGS = {
         usage: 'Usage',
         before: 'Before',
         nickname: 'Nickname',
+        result: 'Result',
         command: {
             defaults: {
                 reason: '(No reason provided)',

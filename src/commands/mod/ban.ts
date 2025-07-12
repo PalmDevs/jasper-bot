@@ -61,7 +61,7 @@ export default new ChatCommand({
         })
 
         const banEmbed = embed({
-            title: `Banned ${user.tag}`,
+            title: string(s.command.ban.action, user.tag),
             fields: [
                 field(string(s.generic.user), user.mention),
                 field(string(s.generic.moderator), context.executor.mention, true),

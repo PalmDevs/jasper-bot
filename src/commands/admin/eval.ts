@@ -41,7 +41,7 @@ export default new ChatCommand({
         })
 
         const evalEmbed = embed({
-            title: 'Result',
+            title: string(s.generic.result),
             description:
                 result.length > 1900 ? subtext(string(s.command.eval.outputTooLarge)) : codeblock(result, 'js'),
         })
