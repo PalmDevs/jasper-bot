@@ -142,7 +142,7 @@ const STRINGS = {
             notFound: 'Note not found. Run without any options to see all notes in this server.',
         },
         purge: {
-            success: (amount: number) => `Purged ${amount} messages.`,
+            success: (amount: number) => `Purged ${amount} messages`,
         },
         register: {
             info: (count: number) => `Registering ${count} commands:`,
@@ -195,6 +195,7 @@ const STRINGS = {
         reason: 'Reason',
         expires: 'Expires',
         usage: 'Usage',
+        before: 'Before',
         command: {
             defaults: {
                 reason: '(No reason provided)',

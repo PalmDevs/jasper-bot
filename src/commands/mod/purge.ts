@@ -9,7 +9,7 @@ import { ChatCommandOptionTypes } from '~/classes/commands/ChatCommandConstants'
 import { DefaultCommandTriggers } from '~/classes/commands/Command'
 import { s, string } from '~/strings'
 import { ModeratorOnlyAccess } from '~/utils/commands'
-import { embed } from '~/utils/embeds'
+import { embed, field } from '~/utils/embeds'
 import { sendModerationLog } from '~/utils/mod'
 
 export default new ChatCommand({
@@ -36,7 +36,7 @@ export default new ChatCommand({
     contexts: [InteractionContextTypes.GUILD],
     integrationTypes: [ApplicationIntegrationTypes.GUILD_INSTALL],
     async execute(context, { amount, before }, actions) {
-        const { trigger } = context
+        const { executor, trigger } = context
         const { channel } = trigger
 
         const msgs = await channel
@@ -48,8 +48,12 @@ export default new ChatCommand({
 
         await channel.deleteMessages(msgs)
 
+        const fields = [field(string(s.generic.moderator), executor.mention, true)]
+        if (before) fields.push(field(string(s.generic.before), before.jumpLink, true))
+
         const purgeEmbed = embed({
             title: string(s.command.purge.success, amount),
+            fields,
         })
 
         await sendModerationLog(
