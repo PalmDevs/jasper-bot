@@ -42,15 +42,6 @@ export default new ChatCommand({
         'had',
         'was',
         'were',
-        'how',
-        'why',
-        'where',
-        'when',
-        'who',
-        'which',
-        'what',
-        'whom',
-        'whose',
     ],
     options: [
         {
