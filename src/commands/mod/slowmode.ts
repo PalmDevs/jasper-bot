@@ -20,7 +20,7 @@ export default new ChatCommand({
             description: 'How long?',
             required: true,
             resolver: durationOptionResolver({
-                min: 1000,
+                min: 0,
                 max: MaxDuration,
             }),
         },
