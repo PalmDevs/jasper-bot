@@ -48,7 +48,7 @@ export default new ChatCommand({
         })
 
         await trigger.reply({
-            content: string(s.command.reply.success),
+            content: string(s.command.reply.action),
             flags: MessageFlags.EPHEMERAL,
         })
     },

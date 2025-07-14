@@ -7,7 +7,7 @@ import { s, string } from '~/strings'
 import { durationOptionResolver, ModeratorOnlyAccess } from '~/utils/commands'
 import { embed, field } from '~/utils/embeds'
 import { subtext } from '~/utils/formatters'
-import { getMember, isMemberPunishable } from '~/utils/guilds'
+import { getMember, isMemberManageable } from '~/utils/guilds'
 import { sendModerationLog } from '~/utils/mod'
 
 const MaxDuration = 6048e5
@@ -52,8 +52,8 @@ export default new ChatCommand({
     integrationTypes: [ApplicationIntegrationTypes.GUILD_INSTALL],
     async execute(context, { user, dmd, proof, reason }, actions) {
         const member = await getMember(context.trigger.guildID, user.id)
-        if (member && (await isMemberPunishable(member)))
-            throw new SelfError(string(s.generic.command.errors.memberNotPunishable, member.mention))
+        if (member && (await isMemberManageable(member)))
+            throw new SelfError(string(s.generic.command.error.user.notManageable, member.mention))
 
         await user.client.rest.guilds.createBan(context.trigger.guildID, user.id, {
             deleteMessageSeconds: dmd && dmd.offset / 1000,
@@ -65,7 +65,7 @@ export default new ChatCommand({
             fields: [
                 field(string(s.generic.user), user.mention),
                 field(string(s.generic.moderator), context.executor.mention, true),
-                field(string(s.generic.reason), reason ?? subtext(string(s.generic.command.defaults.reason)), true),
+                field(string(s.generic.reason), reason ?? subtext(string(s.generic.command.default.reason)), true),
             ],
         })
 

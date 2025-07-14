@@ -29,7 +29,7 @@ const STRINGS = {
             action: (tag: string) => `Banned ${tag}`,
         },
         is: {
-            response: [
+            action: [
                 'Yeah, probably.',
                 'Yeah, whatever.',
                 'Probably.',
@@ -66,7 +66,7 @@ const STRINGS = {
                 'You wish.',
                 "You bet, and you'd lose.",
             ],
-            responseConfirm: [
+            actionConfirm: [
                 'As I said, probably.',
                 "It's whatever, like I said.",
                 'Yeah, probably.',
@@ -109,7 +109,7 @@ const STRINGS = {
             outputFileName: 'eval-output.txt',
         },
         hello: {
-            response: [
+            action: [
                 'Ugh, fuck off.',
                 'What do you want?',
                 'State your business.',
@@ -146,31 +146,35 @@ const STRINGS = {
             reset: subtext('(Reset nickname)'),
         },
         note: {
-            noConfig: (guildName: string) => `No notes configured for ${guildName}.`,
+            error: {
+                noConfig: (guildName: string) => `No notes configured for ${guildName}.`,
+                noNote: 'Note not found. Run without any options to see all notes in this server.',
+            },
             allTitle: (guildName: string) => `Notes in ${guildName}`,
             all: (notes: string[]) => `${notes.map(code).join(', ')}`,
-            notFound: 'Note not found. Run without any options to see all notes in this server.',
         },
         purge: {
-            success: (amount: number) => `Purged ${amount} messages`,
+            action: (amount: number) => `Purged ${amount} messages`,
         },
         register: {
             info: (count: number) => `Registering ${count} commands:`,
-            success: 'Slash commands registered successfully.',
+            action: 'Slash commands registered successfully.',
         },
         reply: {
-            success: 'Fine.',
+            action: 'Fine.',
         },
         role: {
             reason: (tag: string, id: string) => `via command by ${tag} (${id})`,
-            added: 'Added role',
-            removed: 'Removed role',
+            action: {
+                added: 'Added role',
+                removed: 'Removed role',
+            },
         },
         slowmode: {
-            success: (duration: string) => `Set slowmode for ${duration}.`,
+            action: (duration: string) => `Set slowmode for ${duration}`,
         },
         stop: {
-            response: 'Thanks, I can finally go back to doing a bunch of nothing properly.',
+            action: 'Thanks, I can finally go back to doing a bunch of nothing properly.',
         },
         who: {
             title: ['Who am I?', 'Introduce myself? Uh...', 'What do I do? Eh...', 'Huh, what? Oh, right. Hey.'],
@@ -209,21 +213,53 @@ const STRINGS = {
         nickname: 'Nickname',
         result: 'Result',
         command: {
-            defaults: {
+            default: {
                 reason: '(No reason provided)',
             },
-            errors: {
-                memberNotPunishable: (mention: string) =>
-                    `Can't do that to ${mention}. I don't exactly want to get demoted, you know?`,
-                userNotInGuild: (mention: string) => `Did ${mention} just leave? Guess they couldn't handle the heat.`,
-                invalidDuration: (arg: string) => `I don\'t know how long ${code(arg)} is. Pass me a normal duration.`,
-                badDuration: (min?: string, max?: string) => {
-                    let str = "Can't set a timer for that duration."
-                    if (min !== undefined && max !== undefined)
-                        str += ` Pass me something between ${bold(min)} and ${bold(max)}.`
-                    else if (min !== undefined) str += ` Pass me something longer than ${bold(min)}.`
-                    else if (max !== undefined) str += ` Pass me something shorter than ${bold(max)}.`
-                    return str
+            error: {
+                user: {
+                    notManageable: (mention: string) =>
+                        `Can't do that to ${mention}. I don't exactly want to get demoted, you know?`,
+                    notInGuild: (mention: string) => `Did ${mention} just leave? Guess they couldn't handle the heat.`,
+                },
+                duration: {
+                    invalid: (arg: string) => `I don\'t know how long ${code(arg)} is. Pass me a normal duration.`,
+                    bad: (min?: string, max?: string) => {
+                        let str = "Can't set a timer for that duration."
+                        if (min !== undefined && max !== undefined)
+                            str += ` Pass me something between ${bold(min)} and ${bold(max)}.`
+                        else if (min !== undefined) str += ` Pass me something longer than ${bold(min)}.`
+                        else if (max !== undefined) str += ` Pass me something shorter than ${bold(max)}.`
+                        return str
+                    },
+                },
+                validator: {
+                    missing: (name: string, type: string) =>
+                        `You forgot to pass somethin' for the ${code(name)}! It should be some kind of ${bold(type)}.`,
+                    invalid: (name: string, type: string) =>
+                        `You must pass some ${bold(type)} for the ${code(name)}! Not whatever that was.`,
+                    notExists: (name: string, type: string) =>
+                        `The ${code(name)} doesn't even exist. Make sure you pass a valid ${bold(type)}.`,
+                    subcommands: {
+                        missing: (choices: string[]) =>
+                            `You forgot to pass a subcommand. Pick one of them.\n${choices.map(code).join(', ')}`,
+                        invalid: (arg: string, choices: string[]) =>
+                            `I have no idea what you mean by ${code(arg)} for a subcommand. Pick one of these.\n${choices.map(code).join(', ')}.`,
+                    },
+                    strings: {
+                        choice: (name: string, choices: string[]) =>
+                            `You can only pass ${choices.map(code).join(', ')} for ${code(name)}...`,
+                        large: (name: string, max: number) =>
+                            `Yeah, buddy. Not gonna work. Make sure the ${code(name)} ain't longer ${bold(max)} characters.`,
+                        small: (name: string, min: number) =>
+                            `Why so short? Make sure the ${code(name)} is at least ${bold(min)} characters.`,
+                    },
+                    numbers: {
+                        large: (name: string, max: number) =>
+                            `You gotta be kidding me. The ${code(name)} can't be higher than ${bold(max)}.`,
+                        small: (name: string, min: number) =>
+                            `You gotta be kidding me. The ${code(name)} can't be lower than ${bold(min)}.`,
+                    },
                 },
             },
             option: {
@@ -240,34 +276,7 @@ const STRINGS = {
                 [ApplicationCommandOptionTypes.ATTACHMENT]: 'attachment',
                 [ChatCommandOptionTypes.MESSAGE]: 'message',
             },
-            validators: {
-                missing: (name: string, type: string) =>
-                    `You forgot to pass somethin' for the ${code(name)}! It should be some kind of ${bold(type)}.`,
-                invalid: (name: string, type: string) =>
-                    `You must pass some ${bold(type)} for the ${code(name)}! Not whatever that was.`,
-                notExists: (name: string, type: string) =>
-                    `The ${code(name)} doesn't even exist. Make sure you pass a valid ${bold(type)}.`,
-                subcommands: {
-                    missing: (choices: string[]) =>
-                        `You forgot to pass a subcommand. Pick one of them.\n${choices.map(code).join(', ')}`,
-                    invalid: (arg: string, choices: string[]) =>
-                        `I have no idea what you mean by ${code(arg)} for a subcommand. Pick one of these.\n${choices.map(code).join(', ')}.`,
-                },
-                strings: {
-                    badChoice: (name: string, choices: string[]) =>
-                        `You can only pass ${choices.map(code).join(', ')} for ${code(name)}...`,
-                    tooLong: (name: string, max: number) =>
-                        `Yeah, buddy. Not gonna work. Make sure the ${code(name)} ain't longer ${bold(max)} characters.`,
-                    tooShort: (name: string, min: number) =>
-                        `Why so short? Make sure the ${code(name)} is at least ${bold(min)} characters.`,
-                },
-                numbers: {
-                    tooHigh: (name: string, max: number) =>
-                        `You gotta be kidding me. The ${code(name)} can't be higher than ${bold(max)}.`,
-                    tooLow: (name: string, min: number) =>
-                        `You gotta be kidding me. The ${code(name)} can't be lower than ${bold(min)}.`,
-                },
-            },
+
             placeholder: {
                 description: chalkTemplate`{italic (I have no idea what this command does)}`,
             },

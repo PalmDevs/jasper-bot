@@ -96,13 +96,13 @@ export async function optionsFromInteraction<Options extends ChatCommandOptions[
                     if (AnyIdRegex.test(arg)) {
                         const message = await getMessage(intr.channel as TextableChannel, arg)
                         if (!message)
-                            throw new UserError(string(s.generic.command.validators.notExists, opt.name, type))
+                            throw new UserError(string(s.generic.command.error.validator.notExists, opt.name, type))
 
                         opts[opt.name] = message
                         break
                     }
 
-                    throw new UserError(string(s.generic.command.validators.invalid, opt.name, type))
+                    throw new UserError(string(s.generic.command.error.validator.invalid, opt.name, type))
                 }
                 case ApplicationCommandOptionTypes.ROLE: {
                     const arg = wrapper.getRole(opt.name, opt.required as true)
@@ -266,7 +266,7 @@ export async function optionsFromMessage<Options extends ChatCommandOptions[]>(
             case ApplicationCommandOptionTypes.SUB_COMMAND_GROUP:
                 throw new UserError(
                     string(
-                        s.generic.command.validators.subcommands.invalid,
+                        s.generic.command.error.validator.subcommands.invalid,
                         ctx.arg!,
                         options.map(it => it.name),
                     ),
@@ -294,23 +294,23 @@ function handleOptionError(err: number, opt: ChatCommandOptions, options: ChatCo
         )
             throw new UserError(
                 string(
-                    s.generic.command.validators.subcommands.missing,
+                    s.generic.command.error.validator.subcommands.missing,
                     options.map(it => it.name),
                 ),
                 UserErrorType.Usage,
             )
 
-        throw new UserError(string(s.generic.command.validators.missing, opt.name, type), UserErrorType.Usage)
+        throw new UserError(string(s.generic.command.error.validator.missing, opt.name, type), UserErrorType.Usage)
     }
 
     if (err & Errors.Invalid)
-        throw new UserError(string(s.generic.command.validators.invalid, opt.name, type), UserErrorType.Usage)
+        throw new UserError(string(s.generic.command.error.validator.invalid, opt.name, type), UserErrorType.Usage)
 
     if (err & Errors.BadChoice)
         if (opt.type === ApplicationCommandOptionTypes.STRING && opt.choices)
             throw new UserError(
                 string(
-                    s.generic.command.validators.strings.badChoice,
+                    s.generic.command.error.validator.strings.choice,
                     opt.name,
                     opt.choices.map(it => it.name),
                 ),
@@ -318,7 +318,7 @@ function handleOptionError(err: number, opt: ChatCommandOptions, options: ChatCo
             )
 
     if (err & Errors.NotExists)
-        throw new UserError(string(s.generic.command.validators.notExists, opt.name, type), UserErrorType.Usage)
+        throw new UserError(string(s.generic.command.error.validator.notExists, opt.name, type), UserErrorType.Usage)
 }
 
 async function handleSubCommandLikeOption(
@@ -382,13 +382,13 @@ async function handleStringOption(
     } else {
         if (opt.minLength && arg.length < opt.minLength)
             throw new UserError(
-                string(s.generic.command.validators.strings.tooShort, opt.name, opt.minLength),
+                string(s.generic.command.error.validator.strings.small, opt.name, opt.minLength),
                 UserErrorType.Usage,
             )
 
         if (opt.maxLength && arg.length > opt.maxLength)
             throw new UserError(
-                string(s.generic.command.validators.strings.tooLong, opt.name, opt.maxLength),
+                string(s.generic.command.error.validator.strings.large, opt.name, opt.maxLength),
                 UserErrorType.Usage,
             )
     }
@@ -441,13 +441,13 @@ function handleNumberLikeOption(opt: ApplicationCommandOptionsNumber | Applicati
 
     if (opt.minValue !== undefined && val < opt.minValue)
         throw new UserError(
-            string(s.generic.command.validators.numbers.tooLow, opt.name, opt.minValue),
+            string(s.generic.command.error.validator.numbers.small, opt.name, opt.minValue),
             UserErrorType.Usage,
         )
 
     if (opt.maxValue !== undefined && val > opt.maxValue)
         throw new UserError(
-            string(s.generic.command.validators.numbers.tooHigh, opt.name, opt.maxValue),
+            string(s.generic.command.error.validator.numbers.large, opt.name, opt.maxValue),
             UserErrorType.Usage,
         )
 

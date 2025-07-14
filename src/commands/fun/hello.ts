@@ -19,7 +19,7 @@ export default new ChatCommand({
         await setTimeoutPromise(500)
 
         await actions.reply({
-            content: string(s.command.hello.response),
+            content: string(s.command.hello.action),
         })
     },
 })

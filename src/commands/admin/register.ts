@@ -30,7 +30,7 @@ export default new ChatCommand({
         log.info('commands/admin/register', string(s.command.register.info, appCommands.length), appCommands)
 
         await actions.reply({
-            content: string(s.command.register.success),
+            content: string(s.command.register.action),
             flags: MessageFlags.EPHEMERAL,
         })
     },

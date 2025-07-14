@@ -45,7 +45,7 @@ export default new ChatCommand({
         const guild = await getGuild(trigger.guildID)
         assert(guild, 'Guild not available')
 
-        if (!notes) throw new UserError(string(s.command.note.noConfig, guild.name))
+        if (!notes) throw new UserError(string(s.command.note.error.noConfig, guild.name))
         if (!name)
             return await actions.reply({
                 embeds: [
@@ -58,7 +58,7 @@ export default new ChatCommand({
             })
 
         const note = notes[name]
-        if (!note) throw new UserError(string(s.command.note.notFound))
+        if (!note) throw new UserError(string(s.command.note.error.noNote))
 
         if (msg)
             await bot.rest.channels.createMessage(msg.channelID, {

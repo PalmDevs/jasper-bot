@@ -62,7 +62,7 @@ export function durationOptionResolver(
         const duration = parseDuration(arg, options?.defaultUnit)
         if (Number.isNaN(duration.offset)) {
             if (options?.skipInvalid) return pass() as undefined
-            throw new UserError(string(s.generic.command.errors.invalidDuration, arg))
+            throw new UserError(string(s.generic.command.error.duration.invalid, arg))
         }
 
         const { offset } = duration
@@ -73,7 +73,7 @@ export function durationOptionResolver(
         )
             throw new UserError(
                 string(
-                    s.generic.command.errors.badDuration,
+                    s.generic.command.error.duration.bad,
                     options.min !== undefined ? formatDuration(options.min) : undefined,
                     options?.max !== undefined ? formatDuration(options.max) : undefined,
                 ),

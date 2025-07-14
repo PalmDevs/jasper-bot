@@ -8,7 +8,7 @@ import { durationOptionResolver, ModeratorOnlyAccess } from '~/utils/commands'
 import { parseDuration } from '~/utils/durations'
 import { embed, field } from '~/utils/embeds'
 import { subtext } from '~/utils/formatters'
-import { getMember, isMemberPunishable } from '~/utils/guilds'
+import { getMember, isMemberManageable } from '~/utils/guilds'
 import { sendModerationLog } from '~/utils/mod'
 
 const MaxDuration = parseDuration('4w')
@@ -55,9 +55,9 @@ export default new ChatCommand({
         duration ??= MaxDuration
 
         const member = await getMember(trigger.guildID, user.id)
-        if (!member) throw new UserError(string(s.generic.command.errors.userNotInGuild, user.mention))
-        if (await isMemberPunishable(member))
-            throw new SelfError(string(s.generic.command.errors.memberNotPunishable, member.mention))
+        if (!member) throw new UserError(string(s.generic.command.error.user.notInGuild, user.mention))
+        if (await isMemberManageable(member))
+            throw new SelfError(string(s.generic.command.error.user.notManageable, member.mention))
 
         const { fromNow } = duration
 
@@ -72,7 +72,7 @@ export default new ChatCommand({
             fields: [
                 field(string(s.generic.member), member.mention),
                 field(string(s.generic.moderator), executor.mention, true),
-                field(string(s.generic.reason), reason ?? subtext(string(s.generic.command.defaults.reason)), true),
+                field(string(s.generic.reason), reason ?? subtext(string(s.generic.command.default.reason)), true),
                 field(string(s.generic.expires), `<t:${timestamp}> (<t:${timestamp}:R>)`, true),
             ],
         })

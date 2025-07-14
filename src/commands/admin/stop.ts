@@ -18,7 +18,7 @@ export default new ChatCommand({
         const { executor } = context
 
         await actions.reply({
-            content: string(s.command.stop.response),
+            content: string(s.command.stop.action),
             flags: MessageFlags.EPHEMERAL,
         })
 

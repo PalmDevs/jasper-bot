@@ -10,6 +10,7 @@ const recentResponses = new WeakMap<Message, number>()
 
 const MaxConfirmationResponseDistance = 3
 const ConfirmationResponses = [
+    'absolutely sure',
     'seriously',
     'you for real',
     'you sure',
@@ -82,7 +83,7 @@ export default new ChatCommand({
                     const responseIndex = recentResponses.get(msg)
                     if (responseIndex !== undefined) {
                         const msg = await actions.reply({
-                            content: string(s.command.is.responseConfirm[responseIndex]!, question),
+                            content: string(s.command.is.actionConfirm[responseIndex]!, question),
                         })
 
                         recentResponses.set(msg, responseIndex)
@@ -90,12 +91,12 @@ export default new ChatCommand({
                     }
                 }
 
-        const { response } = s.command.is
-        const idx = Math.floor(Math.random() * response.length)
+        const { action: responses } = s.command.is
+        const idx = Math.floor(Math.random() * responses.length)
 
         recentResponses.set(
             await actions.reply({
-                content: string(response[idx]!),
+                content: string(responses[idx]!),
             }),
             idx,
         )

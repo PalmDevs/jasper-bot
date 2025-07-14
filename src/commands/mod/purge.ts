@@ -52,7 +52,7 @@ export default new ChatCommand({
         if (before) fields.unshift(field(string(s.generic.before), before.jumpLink))
 
         const purgeEmbed = embed({
-            title: string(s.command.purge.success, amount),
+            title: string(s.command.purge.action, amount),
             fields,
         })
 

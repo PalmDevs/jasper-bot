@@ -29,7 +29,7 @@ export function getSelfMember(guildId: string) {
     return getMember(guildId, bot.user.id)!
 }
 
-export async function isMemberPunishable(member: Member) {
+export async function isMemberManageable(member: Member) {
     const self = await getSelfMember(member.guildID)
     assert(self, 'Self member not available')
 
