@@ -231,7 +231,7 @@ export type ChatCommandOptionsStringWithResolver<T> = ApplicationCommandOptionsS
      *
      * Call `pass()` to pass the value to the next option.
      */
-    resolver: (value: string, pass: () => void) => T | Promise<T>
+    resolver: ((value: string, pass: () => void) => T | Promise<T>) & { typeName?: string }
 }
 
 export type ChatCommandOptionTypeToOptionValue = {

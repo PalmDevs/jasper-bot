@@ -58,7 +58,7 @@ export function durationOptionResolver(
 export function durationOptionResolver(
     options?: DurationOptionResolverOptions,
 ): ChatCommandOptionsStringWithResolver<Duration | undefined>['resolver'] {
-    return (arg, pass) => {
+    const resolver: ReturnType<typeof durationOptionResolver> = (arg, pass) => {
         const duration = parseDuration(arg, options?.defaultUnit)
         if (Number.isNaN(duration.offset)) {
             if (options?.skipInvalid) return pass() as undefined
@@ -81,4 +81,8 @@ export function durationOptionResolver(
 
         return duration
     }
+
+    resolver.typeName = string(s.generic.duration)
+
+    return resolver
 }

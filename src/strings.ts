@@ -212,6 +212,7 @@ const STRINGS = {
         before: 'Before',
         nickname: 'Nickname',
         result: 'Result',
+        duration: 'Duration',
         command: {
             default: {
                 reason: '(No reason provided)',
