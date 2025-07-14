@@ -22,6 +22,7 @@ export default new ChatCommand({
             resolver: durationOptionResolver({
                 min: 0,
                 max: MaxDuration,
+                defaultUnit: 's',
             }),
         },
     ],
@@ -37,7 +38,7 @@ export default new ChatCommand({
         })
 
         const smEmbed = embed({
-            title: string(s.command.slowmode.success, formatDuration(duration.offset)),
+            title: string(s.command.slowmode.action, formatDuration(duration.offset)),
             fields: [field(string(s.generic.moderator), context.executor.mention)],
         })
 
