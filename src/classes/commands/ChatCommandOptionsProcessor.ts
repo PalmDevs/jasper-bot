@@ -61,6 +61,22 @@ export async function optionsFromInteraction<Options extends ChatCommandOptions[
                 }
                 case ApplicationCommandOptionTypes.STRING: {
                     const arg = wrapper.getString(opt.name, opt.required as true)
+
+                    const resolver = (opt as ChatCommandOptionsStringWithResolver<any>).resolver
+                    if (resolver) {
+                        opts[opt.name] = await resolver(arg, () => {
+                            throw new UserError(
+                                string(
+                                    s.generic.command.error.validator.invalid,
+                                    opt.name,
+                                    resolver.typeName ?? s.generic.command.option[opt.type],
+                                ),
+                                UserErrorType.Usage,
+                            )
+                        })
+                        break
+                    }
+
                     if (arg) opts[opt.name] = arg
                     break
                 }

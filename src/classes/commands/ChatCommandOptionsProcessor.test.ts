@@ -6,7 +6,7 @@ import { parseArguments } from '~/utils/parsers'
 import { UserError } from '../Error'
 import { ChatCommandOptionTypes } from './ChatCommandConstants'
 import { optionsFromInteraction, optionsFromMessage } from './ChatCommandOptionsProcessor'
-import type { ChatCommandOptions } from './ChatCommand'
+import type { ChatCommandOptions, ChatCommandOptionsStringWithResolver } from './ChatCommand'
 
 describe('ChatCommandOptionsProcessor', () => {
     describe('optionsFromMessage', () => {
@@ -331,6 +331,25 @@ describe('ChatCommandOptionsProcessor', () => {
             const result = await optionsFromInteraction({ data: { options: {} } } as any, opts)
 
             expect(result).toEqual({ sub1: true })
+        })
+
+        test('handles string options with resolver', async () => {
+            const stringOption = {
+                type: ApplicationCommandOptionTypes.STRING,
+                name: 'string1',
+                description: 'desc',
+                resolver: () => true,
+            } as ChatCommandOptionsStringWithResolver<true>
+            const opts: ChatCommandOptions[] = [stringOption]
+
+            const wrapper = {
+                getString: mock(() => 'test'),
+            } as any
+
+            const result = await optionsFromInteraction({ data: { options: wrapper } } as any, opts)
+
+            expect(result).toEqual({ string1: true })
+            expect(wrapper.getString).toHaveBeenCalledWith(stringOption.name, stringOption.required)
         })
     })
 })
