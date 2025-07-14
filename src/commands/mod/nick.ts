@@ -11,8 +11,8 @@ import { sendModerationLog } from '~/utils/mod'
 
 export default new ChatCommand({
     name: 'nick',
-    description: "Somebody causin' trouble?",
-    aliases: ['gtfo', 'boot', 'murder', 'kill', 'explode'],
+    description: 'Want to call someone something else?',
+    aliases: ['call', 'name', 'nickname', 'rename'],
     options: [
         {
             name: 'user',
@@ -24,7 +24,7 @@ export default new ChatCommand({
         {
             name: 'nick',
             type: ApplicationCommandOptionTypes.STRING,
-            description: 'What to set?',
+            description: 'What to name?',
             greedy: true,
         },
     ],
