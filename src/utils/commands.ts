@@ -38,6 +38,7 @@ export const AdminOnlyAccess: ChatCommandAccess = {
 export type DurationOptionResolverOptions<SkipInvalid extends boolean = boolean> = {
     min?: number
     max?: number
+    defaultUnit?: string
 } & If<
     SkipInvalid,
     {
@@ -58,7 +59,7 @@ export function durationOptionResolver(
     options?: DurationOptionResolverOptions,
 ): ChatCommandOptionsStringWithResolver<Duration | undefined>['resolver'] {
     return (arg, pass) => {
-        const duration = parseDuration(arg)
+        const duration = parseDuration(arg, options?.defaultUnit)
         if (Number.isNaN(duration.offset)) {
             if (options?.skipInvalid) return pass() as undefined
             throw new UserError(string(s.generic.command.errors.invalidDuration, arg))
