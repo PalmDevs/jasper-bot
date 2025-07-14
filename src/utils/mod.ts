@@ -9,7 +9,7 @@ export async function sendModerationLog(embed: Embed, msg: Message, proofUrl?: s
 
     embed.fields ??= []
     embed.fields.push(field('Reference', msg.jumpLink))
-    if (proofUrl) embed.thumbnail = { url: proofUrl }
+    if (proofUrl) embed.image = { url: proofUrl }
 
     await channel.createMessage({
         embeds: [embed],
