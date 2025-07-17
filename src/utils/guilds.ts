@@ -33,26 +33,25 @@ export async function isMemberManageable(member: Member) {
     const self = await getSelfMember(member.guildID)
     assert(self, 'Self member not available')
 
+    if (!member.roles.length) return self.roles.length
+    if (!self.roles.length) return member.roles.length
+
     const guild = await getGuild(member.guildID)
     assert(guild, 'Guild not available')
 
-    const highestRolePositionReducer = (prev: Role, id: string) => {
+    const highestRolePositionReducer = (prev: Role, id: string): Role => {
         const current = guild.roles.get(id)!
         return current.position > prev.position ? current : prev
     }
 
-    const firstMemberRoleId = member.roles[0] ?? null
-    const firstSelfRoleId = self.roles[0] ?? null
+    const [firstMemberRoleId] = member.roles
+    const [firstSelfRoleId] = self.roles
 
-    const memberHighest = (firstMemberRoleId &&
-        member.roles.reduce(highestRolePositionReducer, guild.roles.get(firstMemberRoleId)!)) as Role | null
-
-    const selfHighest = (firstSelfRoleId &&
-        self.roles.reduce(highestRolePositionReducer, guild.roles.get(firstSelfRoleId)!)) as Role | null
+    const memberHighest = member.roles.reduce(highestRolePositionReducer, guild.roles.get(firstMemberRoleId!)!)
+    const selfHighest = self.roles.reduce(highestRolePositionReducer, guild.roles.get(firstSelfRoleId!)!)
 
     return (
         self.permissions.allow & (Permissions.BAN_MEMBERS | Permissions.ADMINISTRATOR) &&
-        // @ts-expect-error: Null is zero-like, so this is fine
-        selfHighest > memberHighest
+        selfHighest.position >= memberHighest.position
     )
 }
