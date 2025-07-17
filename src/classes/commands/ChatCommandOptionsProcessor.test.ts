@@ -10,7 +10,7 @@ import type { ChatCommandOptions, ChatCommandOptionsStringWithResolver } from '.
 
 describe('ChatCommandOptionsProcessor', () => {
     describe('optionsFromMessage', () => {
-        const msg = createMockMessage({})
+        const msg = createMockMessage({ guildID: '123' })
 
         test('parses subcommand (group) options', async () => {
             const opts: ChatCommandOptions[] = [
@@ -175,6 +175,16 @@ describe('ChatCommandOptionsProcessor', () => {
 
         test('parses user options', async () => {
             MockBot.users.get.mockImplementation(() => MockUser)
+            MockBot.guilds.get.mockImplementation(
+                () =>
+                    ({
+                        memberSearch: mock(() =>
+                            Promise.resolve({
+                                members: [{ member: { user: MockUser, username: 'palmdevs' } }],
+                            }),
+                        ),
+                    }) as any,
+            )
 
             const opts = [
                 { type: ApplicationCommandOptionTypes.USER, name: 'user1', description: 'desc', required: true },
@@ -183,6 +193,11 @@ describe('ChatCommandOptionsProcessor', () => {
 
             const result = await optionsFromMessage(msg, parser, opts)
             expect(result).toEqual({ user1: MockUser })
+
+            // Handle username search
+            const parser2 = parseArguments('palmdevs')
+            const result2 = await optionsFromMessage(msg, parser2, opts)
+            expect(result2).toEqual({ user1: MockUser })
         })
 
         test('parses message options', async () => {

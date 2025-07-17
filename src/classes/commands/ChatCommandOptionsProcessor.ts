@@ -564,10 +564,7 @@ async function handleUserOption(opt: ApplicationCommandOptionsUser | ChatCommand
             return
         }
 
-        if (distance(arg, member.member.user.username) <= MaxUserNameMatchDistance) {
-            user = member.member.user
-            return
-        }
+        if (distance(arg, member.member.username) <= MaxUserNameMatchDistance) user = member.member.user
     }
 
     if (user) {
