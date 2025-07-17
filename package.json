@@ -13,7 +13,7 @@
     "fix": "biome check . --write"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.0.6",
+    "@biomejs/biome": "^2.1.1",
     "@types/bun": "latest",
     "drizzle-kit": "^0.31.4"
   },
@@ -29,7 +29,7 @@
   "dependencies": {
     "@sapphire/duration": "^1.2.0",
     "chalk-template": "^1.1.0",
-    "drizzle-orm": "^0.44.2",
+    "drizzle-orm": "^0.44.3",
     "fastest-levenshtein": "^1.0.16",
     "oceanic.js": "^1.12.0"
   },
