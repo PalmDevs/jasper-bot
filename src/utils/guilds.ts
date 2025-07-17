@@ -1,6 +1,6 @@
 import assert from 'assert'
-import { type Member, Permissions, type Role } from 'oceanic.js'
 import { bot, log } from '~/context'
+import type { Member, Role } from 'oceanic.js'
 
 export async function getGuild(guildId: string) {
     try {
@@ -50,8 +50,5 @@ export async function isMemberManageable(member: Member) {
     const memberHighest = member.roles.reduce(highestRolePositionReducer, guild.roles.get(firstMemberRoleId!)!)
     const selfHighest = self.roles.reduce(highestRolePositionReducer, guild.roles.get(firstSelfRoleId!)!)
 
-    return (
-        self.permissions.allow & (Permissions.BAN_MEMBERS | Permissions.ADMINISTRATOR) &&
-        selfHighest.position >= memberHighest.position
-    )
+    return selfHighest.position > memberHighest.position
 }

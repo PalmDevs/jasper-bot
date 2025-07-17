@@ -56,7 +56,7 @@ export default new ChatCommand({
 
         const member = await getMember(trigger.guildID, user.id)
         if (!member) throw new UserError(string(s.generic.command.error.user.notInGuild, user.mention))
-        if (await isMemberManageable(member))
+        if (!(await isMemberManageable(member)))
             throw new SelfError(string(s.generic.command.error.user.notManageable, member.mention))
 
         const { fromNow } = duration

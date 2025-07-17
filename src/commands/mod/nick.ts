@@ -35,7 +35,7 @@ export default new ChatCommand({
     async execute({ trigger: { guildID }, executor }, { user, nick }, actions) {
         const member = await getMember(guildID, user.id)
         if (!member) throw new UserError(string(s.generic.command.error.user.notInGuild, user.mention))
-        if (await isMemberManageable(member))
+        if (!(await isMemberManageable(member)))
             throw new SelfError(string(s.generic.command.error.user.notManageable, member.mention))
 
         await member.edit({

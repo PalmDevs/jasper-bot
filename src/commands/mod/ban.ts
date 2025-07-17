@@ -52,7 +52,7 @@ export default new ChatCommand({
     integrationTypes: [ApplicationIntegrationTypes.GUILD_INSTALL],
     async execute(context, { user, dmd, proof, reason }, actions) {
         const member = await getMember(context.trigger.guildID, user.id)
-        if (member && (await isMemberManageable(member)))
+        if (member && !(await isMemberManageable(member)))
             throw new SelfError(string(s.generic.command.error.user.notManageable, member.mention))
 
         await user.client.rest.guilds.createBan(context.trigger.guildID, user.id, {
