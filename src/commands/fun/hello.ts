@@ -1,6 +1,7 @@
 import { setTimeout as setTimeoutPromise } from 'timers/promises'
 import { ChatCommand } from '~/classes/commands/ChatCommand'
 import { CommandTriggers, DefaultCommandContexts, DefaultCommandIntegrationTypes } from '~/classes/commands/Command'
+import { config } from '~/context'
 import { s, string } from '~/strings'
 
 export default new ChatCommand({
@@ -13,6 +14,10 @@ export default new ChatCommand({
     integrationTypes: DefaultCommandIntegrationTypes,
     async execute(context, _options, actions) {
         const { trigger } = context
+
+        // If the message is just a prefix and the user does not mention the bot, ignore it
+        if (config.prefix.matches.includes(trigger.content) && !trigger.mentions.users.includes(trigger.client.user))
+            return
 
         const { channel } = trigger
         if (channel) await channel.client.rest.channels.sendTyping(channel.id)
