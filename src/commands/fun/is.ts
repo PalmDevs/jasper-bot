@@ -1,4 +1,4 @@
-import { distance } from 'fastest-levenshtein'
+import { fuzzy } from 'fast-fuzzy'
 import { ApplicationCommandOptionTypes, type Message } from 'oceanic.js'
 import { setTimeout as setTimeoutPromise } from 'timers/promises'
 import { ChatCommand } from '~/classes/commands/ChatCommand'
@@ -8,7 +8,7 @@ import { s, string } from '~/strings'
 // Message -> Response Index
 const recentResponses = new WeakMap<Message, number>()
 
-const MaxConfirmationResponseDistance = 3
+const MinConfirmationResponseScore = 0.75
 const ConfirmationResponses = [
     'absolutely sure',
     'seriously',
@@ -75,7 +75,7 @@ export default new ChatCommand({
             // The user is asking us to confirm a previous response
             // So we double down on it, YEAH!
             for (const response of ConfirmationResponses)
-                if (distance(question, response) <= MaxConfirmationResponseDistance) {
+                if (fuzzy(question, response) >= MinConfirmationResponseScore) {
                     // Attempt to get message from cache
                     const msg = trigger.channel.messages.get(trigger.messageReference.messageID!)
                     if (!msg) return

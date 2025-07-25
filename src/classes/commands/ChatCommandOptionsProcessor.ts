@@ -1,5 +1,5 @@
 import assert from 'assert'
-import { distance } from 'fastest-levenshtein'
+import { fuzzy } from 'fast-fuzzy'
 import {
     type ApplicationCommandOptionsAttachment,
     type ApplicationCommandOptionsBoolean,
@@ -143,8 +143,8 @@ export async function optionsFromInteraction<Options extends ChatCommandOptions[
 
 const CommandArgumentSplitter = ' '
 
-const MaxRoleNameMatchDistance = 3
-const MaxUserNameMatchDistance = 1
+const MinRoleNameMatchScore = 0.75
+const MinUserNameMatchScore = 0.9
 
 const BoolFalse = new Set(['false', '0', 'no', 'n', 'off', 'f'])
 const BoolTrue = new Set(['true', '1', 'yes', 'y', 'on', 't'])
@@ -564,7 +564,7 @@ async function handleUserOption(opt: ApplicationCommandOptionsUser | ChatCommand
             return
         }
 
-        if (distance(arg, member.member.username) <= MaxUserNameMatchDistance) user = member.member.user
+        if (fuzzy(arg, member.member.username) >= MinUserNameMatchScore) user = member.member.user
     }
 
     if (user) {
@@ -634,28 +634,28 @@ async function handleRoleOption(opt: ApplicationCommandOptionsRole, ctx: Context
     if (parsed) role = roles.get(parsed[1]!)
     // If we didn't find the role by ID, try to find it by name
     if (!role) {
-        const query = arg.toLowerCase()
-        let lowestDist = Number.POSITIVE_INFINITY
+        let highestScore = Number.NEGATIVE_INFINITY
 
         for (const r of roles.values()) {
-            const dist = distance(query, r.name.toLowerCase())
+            // Library ignores casing by default
+            const dist = fuzzy(arg, r.name)
 
             // Case insensitive match
-            if (!dist) {
+            if (dist === 1) {
                 // Exact match
                 if (r.name === arg) {
                     role = r
                     break
                 }
 
-                lowestDist = MaxRoleNameMatchDistance
+                highestScore = MinRoleNameMatchScore
                 continue
             }
 
-            if (dist > MaxRoleNameMatchDistance) continue
+            if (dist < MinRoleNameMatchScore) continue
 
-            if (dist < lowestDist) {
-                lowestDist = dist
+            if (dist > highestScore) {
+                highestScore = dist
                 role = r
             }
         }

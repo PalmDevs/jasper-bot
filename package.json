@@ -30,7 +30,7 @@
     "@sapphire/duration": "^1.2.0",
     "chalk-template": "^1.1.0",
     "drizzle-orm": "^0.44.3",
-    "fastest-levenshtein": "^1.0.16",
+    "fast-fuzzy": "^1.12.0",
     "oceanic.js": "^1.12.0"
   },
   "optionalDependencies": {
