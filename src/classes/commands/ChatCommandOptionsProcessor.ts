@@ -638,27 +638,28 @@ async function handleRoleOption(opt: ApplicationCommandOptionsRole, ctx: Context
 
         for (const r of roles.values()) {
             // Library ignores casing by default
-            const dist = fuzzy(arg, r.name)
+            const score = fuzzy(arg, r.name)
 
             // Case insensitive match
-            if (dist === 1) {
+            if (score === 1) {
+                role = r
+
                 // Exact match
-                if (r.name === arg) {
-                    role = r
-                    break
-                }
+                if (r.name === arg) break
 
                 highestScore = MinRoleNameMatchScore
                 continue
             }
 
-            if (dist < MinRoleNameMatchScore) continue
+            if (score < MinRoleNameMatchScore) continue
 
-            if (dist > highestScore) {
-                highestScore = dist
+            if (score > highestScore) {
+                highestScore = score
                 role = r
             }
         }
+
+        console.log()
     }
 
     if (role) {
