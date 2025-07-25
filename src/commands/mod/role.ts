@@ -81,6 +81,7 @@ export default new ChatCommand({
 
         await sendModerationLog(
             roleEmbed,
+            trigger.guildID,
             await actions.reply({
                 embeds: [roleEmbed],
             }),

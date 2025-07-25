@@ -53,6 +53,7 @@ export default new ChatCommand({
 
         await sendModerationLog(
             nickEmbed,
+            guildID,
             await actions.reply({
                 embeds: [nickEmbed],
             }),

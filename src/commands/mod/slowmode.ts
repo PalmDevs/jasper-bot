@@ -44,6 +44,7 @@ export default new ChatCommand({
 
         await sendModerationLog(
             smEmbed,
+            trigger.guildID,
             await actions.reply({
                 embeds: [smEmbed],
             }),

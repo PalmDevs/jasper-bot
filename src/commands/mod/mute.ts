@@ -11,7 +11,7 @@ import { subtext } from '~/utils/formatters'
 import { getMember, isMemberManageable } from '~/utils/guilds'
 import { sendModerationLog } from '~/utils/mod'
 
-const MaxDuration = parseDuration('4w')
+export const MaxDuration = parseDuration('4w')
 
 export default new ChatCommand({
     name: 'mute',
@@ -79,6 +79,7 @@ export default new ChatCommand({
 
         await sendModerationLog(
             muteEmbed,
+            trigger.guildID,
             await actions.reply({
                 embeds: [muteEmbed],
             }),

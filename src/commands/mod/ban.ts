@@ -71,6 +71,7 @@ export default new ChatCommand({
 
         await sendModerationLog(
             banEmbed,
+            context.trigger.guildID,
             await actions.reply({
                 embeds: [banEmbed],
             }),

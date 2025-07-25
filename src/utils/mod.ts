@@ -3,12 +3,12 @@ import { getChannel } from './channels'
 import { field } from './embeds'
 import type { Embed, Message, TextChannel, ThreadChannel } from 'oceanic.js'
 
-export async function sendModerationLog(embed: Embed, msg: Message, proofUrl?: string) {
-    const channel = await getLogChannelOrThread(msg.guildID!)
+export async function sendModerationLog(embed: Embed, guildId: string, msg?: Message, proofUrl?: string) {
+    const channel = await getLogChannelOrThread(guildId)
     if (!channel) return
 
     embed.fields ??= []
-    embed.fields.push(field('Reference', msg.jumpLink))
+    if (msg) embed.fields.push(field('Reference', msg.jumpLink))
     if (proofUrl) embed.image = { url: proofUrl }
 
     await channel.createMessage({

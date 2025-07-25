@@ -58,6 +58,7 @@ export default new ChatCommand({
 
         await sendModerationLog(
             purgeEmbed,
+            trigger.guildID,
             await actions.reply({
                 embeds: [purgeEmbed],
             }),
