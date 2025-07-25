@@ -5,3 +5,4 @@ import './messageCreate/command'
 import './interactionCreate/command'
 
 import './guildMemberAdd/autorole'
+import './guildMemberAdd/accountAge'

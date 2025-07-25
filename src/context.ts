@@ -70,6 +70,7 @@ export interface Config {
                     channel: string
                     thread?: string
                 }
+                minAccountAge?: number
             }
         }
     }
