@@ -672,7 +672,7 @@ async function handleRoleOption(opt: ApplicationCommandOptionsRole, ctx: Context
 async function handleAttachmentOption(opt: ApplicationCommandOptionsAttachment, ctx: Context) {
     const { opts, msg } = ctx
 
-    const attachment = msg.attachments.first()
+    const attachment = msg.attachments.first() ?? msg.embeds[0]?.image?.url
     if (!attachment) {
         if (opt.required) ctx.err = Errors.Missing
         return
