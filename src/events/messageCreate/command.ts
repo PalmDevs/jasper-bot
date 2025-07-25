@@ -66,6 +66,15 @@ bot.on(EventName, async msg => {
 function getActualMessageContentAndTriggerInfo(msg: Message): [] | [string, boolean] {
     const { content } = msg
     let triggeredByReplyMentions = false
+    let prefixLength = 0
+
+    for (const prefix of config.prefix.matches)
+        if (content.startsWith(prefix)) {
+            prefixLength = prefix.length
+            break
+        }
+
+    if (prefixLength) return [content.slice(prefixLength).trimStart(), triggeredByReplyMentions]
 
     if (config.prefix.mentions) {
         const mention = `<@${msg.client.user.id}>`
@@ -88,16 +97,5 @@ function getActualMessageContentAndTriggerInfo(msg: Message): [] | [string, bool
         }
     }
 
-    let prefixLength = 0
-
-    for (const prefix of config.prefix.matches) {
-        if (content.startsWith(prefix)) {
-            prefixLength = prefix.length
-            break
-        }
-    }
-
-    if (!prefixLength) return []
-
-    return [content.slice(prefixLength).trimStart(), triggeredByReplyMentions]
+    return []
 }
