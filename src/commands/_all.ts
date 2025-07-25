@@ -14,6 +14,7 @@ import NickCommand from './mod/nick'
 import PurgeCommand from './mod/purge'
 import RoleCommand from './mod/role'
 import SlowmodeCommand from './mod/slowmode'
+import UnmuteCommand from './mod/unmute'
 import AvatarCommand from './utils/avatar'
 import NoteCommand from './utils/note'
 
@@ -34,6 +35,7 @@ export const cmds = [
     PurgeCommand,
     RoleCommand,
     SlowmodeCommand,
+    UnmuteCommand,
     AvatarCommand,
     NoteCommand,
 ]

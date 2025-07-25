@@ -180,6 +180,9 @@ const STRINGS = {
         stop: {
             action: 'Thanks, I can finally go back to doing a bunch of nothing properly.',
         },
+        unmute: {
+            action: (tag: string) => `Unmuted ${tag}`,
+        },
         who: {
             title: ['Who am I?', 'Introduce myself? Uh...', 'What do I do? Eh...', 'Huh, what? Oh, right. Hey.'],
             description:
