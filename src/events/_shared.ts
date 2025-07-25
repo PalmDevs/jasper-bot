@@ -1,11 +1,11 @@
-import { type CommandInteraction, Message, MessageFlags } from 'oceanic.js'
+import { ApplicationCommandOptionTypes, type CommandInteraction, Message, MessageFlags } from 'oceanic.js'
 import { SelfError, UserError, UserErrorType } from '~/classes/Error'
 import { Emojis, Illustrations } from '~/constants'
 import { log } from '~/context'
 import { s, string } from '~/strings'
 import { embed, field } from '~/utils/embeds'
 import { bold } from '~/utils/formatters'
-import type { AnyChatCommand, ChatCommandExecuteActions } from '~/classes/commands/ChatCommand'
+import type { AnyChatCommand, ChatCommandExecuteActions, ChatCommandOptions } from '~/classes/commands/ChatCommand'
 
 const LogTag = 'events/_shared'
 
@@ -30,12 +30,9 @@ export async function handleChatCommandError(
                     ? [
                           field(
                               string(s.generic.usage),
-                              `${bold(cmd.name)} ${cmd.options
-                                  .map(opt => {
-                                      const info = `${bold(opt.name)}: ${string(s.generic.command.option[opt.type])}`
-                                      return opt.required ? `<${info}>` : `[${info}]`
-                                  })
-                                  .join(' ')}`,
+                              getUsages(cmd.options)
+                                  .map(usage => `${bold(cmd.name)} ${usage}`)
+                                  .join('\n'),
                           ),
                       ]
                     : undefined,
@@ -64,4 +61,26 @@ export async function handleChatCommandError(
         if (trigger instanceof Message)
             await trigger.client.rest.channels.createReaction(trigger.channelID, trigger.id, Emojis.error).catch()
     }
+}
+
+function getUsages(options: ChatCommandOptions[]): string[] {
+    let subcommand = false
+    const usages: string[] = []
+
+    for (const opt of options)
+        switch (opt.type) {
+            case ApplicationCommandOptionTypes.SUB_COMMAND:
+            case ApplicationCommandOptionTypes.SUB_COMMAND_GROUP:
+                subcommand = true
+                usages.push(`${bold(opt.name)} ${opt.options ? getUsages(opt.options)[0] : ''}`)
+                break
+
+            default: {
+                const info = `${bold(opt.name)}: ${string(s.generic.command.option[opt.type])}`
+                usages.push(opt.required ? `<${info}>` : `[${info}]`)
+            }
+        }
+
+    if (subcommand) return usages
+    return [usages.join(' ')]
 }
