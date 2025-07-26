@@ -1,7 +1,7 @@
 {
   "name": "jasper-bot",
-  "description": "Providing assistance as well as occasional yelling.",
-  "version": "0.1.0",
+  "description": "Providing Discord assistance as well as occasional yelling.",
+  "version": "1.0.0",
   "module": "dist/index.js",
   "type": "module",
   "private": true,
