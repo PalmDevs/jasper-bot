@@ -26,16 +26,6 @@ export default new ChatCommand({
             required: true,
         },
         {
-            name: 'duration',
-            type: ApplicationCommandOptionTypes.STRING,
-            description: 'How long? (Range: 1 second - 28 days) (Default: 28 days)',
-            resolver: durationOptionResolver({
-                skipInvalid: true,
-                min: 1000,
-                max: MaxDuration.offset,
-            }),
-        },
-        {
             name: 'proof',
             type: ApplicationCommandOptionTypes.ATTACHMENT,
             description: 'Any proof?',
@@ -54,6 +44,16 @@ export default new ChatCommand({
             name: 'proof_4',
             type: ApplicationCommandOptionTypes.ATTACHMENT,
             description: 'How many do you want to put?',
+        },
+        {
+            name: 'duration',
+            type: ApplicationCommandOptionTypes.STRING,
+            description: 'How long? (Range: 1 second - 28 days) (Default: 28 days)',
+            resolver: durationOptionResolver({
+                skipInvalid: true,
+                min: 1000,
+                max: MaxDuration.offset,
+            }),
         },
         {
             name: 'reason',

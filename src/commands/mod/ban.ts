@@ -25,16 +25,6 @@ export default new ChatCommand({
             required: true,
         },
         {
-            name: 'dmd',
-            type: ApplicationCommandOptionTypes.STRING,
-            description: 'How much to clean up?',
-            resolver: durationOptionResolver({
-                skipInvalid: true,
-                min: 1000,
-                max: MaxDuration,
-            }),
-        },
-        {
             name: 'proof',
             type: ApplicationCommandOptionTypes.ATTACHMENT,
             description: 'Any proof?',
@@ -53,6 +43,16 @@ export default new ChatCommand({
             name: 'proof_4',
             type: ApplicationCommandOptionTypes.ATTACHMENT,
             description: 'How many do you want to put?',
+        },
+        {
+            name: 'dmd',
+            type: ApplicationCommandOptionTypes.STRING,
+            description: 'How much to clean up?',
+            resolver: durationOptionResolver({
+                skipInvalid: true,
+                min: 1000,
+                max: MaxDuration,
+            }),
         },
         {
             name: 'reason',
