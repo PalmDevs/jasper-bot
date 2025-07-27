@@ -230,6 +230,264 @@ describe('ChatCommandOptionsProcessor', () => {
             expect(result).toEqual({ attachment1: MockAttachment })
         })
 
+        test('parses attachment options from Discord URL', async () => {
+            // Mock fetch for attachment size
+            const mockFetch = mock(() =>
+                Promise.resolve({
+                    headers: { get: mock(() => '1024') },
+                }),
+            )
+            // @ts-ignore
+            global.fetch = mockFetch
+
+            const opts: ChatCommandOptions[] = [
+                {
+                    type: ApplicationCommandOptionTypes.ATTACHMENT,
+                    name: 'attachment1',
+                    description: 'desc',
+                    required: true,
+                },
+            ]
+
+            const attachments = new TypedCollection(Attachment, MockBot as unknown as Client)
+            const msg = createMockMessage({ attachments, client: MockBot as unknown as Client })
+            const parser = parseArguments('https://cdn.discordapp.com/attachments/123456789/987654321/test_file.png')
+
+            const result = await optionsFromMessage(msg, parser, opts)
+
+            expect(result.attachment1).toBeDefined()
+            expect(result.attachment1.id).toBe('987654321')
+            expect(result.attachment1.filename).toBe('test_file.png')
+            expect(result.attachment1.url).toBe(
+                'https://cdn.discordapp.com/attachments/123456789/987654321/test_file.png',
+            )
+            expect(result.attachment1.size).toBe(1024)
+            expect(mockFetch).toHaveBeenCalledWith(
+                'https://cdn.discordapp.com/attachments/123456789/987654321/test_file.png',
+            )
+        })
+
+        test('parses attachment options from Discord media URL', async () => {
+            // Mock fetch for attachment size
+            const mockFetch = mock(() =>
+                Promise.resolve({
+                    headers: { get: mock(() => '2048') },
+                }),
+            )
+            // @ts-ignore
+            global.fetch = mockFetch
+
+            const opts: ChatCommandOptions[] = [
+                {
+                    type: ApplicationCommandOptionTypes.ATTACHMENT,
+                    name: 'attachment1',
+                    description: 'desc',
+                    required: true,
+                },
+            ]
+
+            const attachments = new TypedCollection(Attachment, MockBot as unknown as Client)
+            const msg = createMockMessage({ attachments, client: MockBot as unknown as Client })
+            const parser = parseArguments(
+                'https://media.discordapp.net/attachments/111222333/444555666/document.pdf?width=100&height=200',
+            )
+
+            const result = await optionsFromMessage(msg, parser, opts)
+
+            expect(result.attachment1).toBeDefined()
+            expect(result.attachment1.id).toBe('444555666')
+            expect(result.attachment1.filename).toBe('document.pdf')
+            expect(result.attachment1.url).toBe(
+                'https://media.discordapp.net/attachments/111222333/444555666/document.pdf?width=100&height=200',
+            )
+            expect(result.attachment1.size).toBe(2048)
+        })
+
+        test('handles attachment URL with complex filename', async () => {
+            // Mock fetch for attachment size
+            const mockFetch = mock(() =>
+                Promise.resolve({
+                    headers: { get: mock(() => '512') },
+                }),
+            )
+            // @ts-ignore
+            global.fetch = mockFetch
+
+            const opts: ChatCommandOptions[] = [
+                {
+                    type: ApplicationCommandOptionTypes.ATTACHMENT,
+                    name: 'attachment1',
+                    description: 'desc',
+                    required: true,
+                },
+            ]
+
+            const attachments = new TypedCollection(Attachment, MockBot as unknown as Client)
+            const msg = createMockMessage({ attachments, client: MockBot as unknown as Client })
+            const parser = parseArguments(
+                'https://cdn.discordapp.com/attachments/123/456/my-complex-file_name.with.dots.and-dashes.txt',
+            )
+
+            const result = await optionsFromMessage(msg, parser, opts)
+
+            expect(result.attachment1).toBeDefined()
+            expect(result.attachment1.filename).toBe('my-complex-file_name.with.dots.and-dashes.txt')
+        })
+
+        test('handles attachment URL fetch error', async () => {
+            // Mock fetch to throw an error
+            const mockFetch = mock(() => Promise.reject(new Error('Network error')))
+            // @ts-ignore
+            global.fetch = mockFetch
+
+            const opts: ChatCommandOptions[] = [
+                {
+                    type: ApplicationCommandOptionTypes.ATTACHMENT,
+                    name: 'attachment1',
+                    description: 'desc',
+                    required: true,
+                },
+            ]
+
+            const attachments = new TypedCollection(Attachment, MockBot as unknown as Client)
+            const msg = createMockMessage({ attachments, client: MockBot as unknown as Client })
+            const parser = parseArguments('https://cdn.discordapp.com/attachments/123/456/file.jpg')
+
+            const result = await optionsFromMessage(msg, parser, opts)
+
+            expect(result.attachment1).toBeDefined()
+            expect(result.attachment1.size).toBe(UnknownContentLength) // Should default to UnknownContentLength on error
+        })
+
+        test('handles attachment URL with missing Content-Length header', async () => {
+            // Mock fetch with undefined Content-Length header (to trigger NaN)
+            const mockFetch = mock(() =>
+                Promise.resolve({
+                    headers: { get: mock(() => undefined) },
+                }),
+            )
+            // @ts-ignore
+            global.fetch = mockFetch
+
+            const opts: ChatCommandOptions[] = [
+                {
+                    type: ApplicationCommandOptionTypes.ATTACHMENT,
+                    name: 'attachment1',
+                    description: 'desc',
+                    required: true,
+                },
+            ]
+
+            const attachments = new TypedCollection(Attachment, MockBot as unknown as Client)
+            const msg = createMockMessage({ attachments, client: MockBot as unknown as Client })
+            const parser = parseArguments('https://cdn.discordapp.com/attachments/123/456/file.gif')
+
+            const result = await optionsFromMessage(msg, parser, opts)
+
+            expect(result.attachment1).toBeDefined()
+            expect(result.attachment1.size).toBe(UnknownContentLength) // Should default to UnknownContentLength when Content-Length is missing/undefined
+        })
+
+        test('handles attachment URL with null Content-Length header', async () => {
+            // Mock fetch with null Content-Length header (Number(null) = 0)
+            const mockFetch = mock(() =>
+                Promise.resolve({
+                    headers: { get: mock(() => null) },
+                }),
+            )
+            // @ts-ignore
+            global.fetch = mockFetch
+
+            const opts: ChatCommandOptions[] = [
+                {
+                    type: ApplicationCommandOptionTypes.ATTACHMENT,
+                    name: 'attachment1',
+                    description: 'desc',
+                    required: true,
+                },
+            ]
+
+            const attachments = new TypedCollection(Attachment, MockBot as unknown as Client)
+            const msg = createMockMessage({ attachments, client: MockBot as unknown as Client })
+            const parser = parseArguments('https://cdn.discordapp.com/attachments/123/456/file.gif')
+
+            const result = await optionsFromMessage(msg, parser, opts)
+
+            expect(result.attachment1).toBeDefined()
+            expect(result.attachment1.size).toBe(0) // Number(null) returns 0, not NaN
+        })
+
+        test('handles invalid attachment URL', async () => {
+            const opts: ChatCommandOptions[] = [
+                {
+                    type: ApplicationCommandOptionTypes.ATTACHMENT,
+                    name: 'attachment1',
+                    description: 'desc',
+                    required: false,
+                },
+                // Add a string option to consume the invalid URL
+                {
+                    type: ApplicationCommandOptionTypes.STRING,
+                    name: 'fallback',
+                    description: 'desc',
+                    required: false,
+                },
+            ]
+
+            const attachments = new TypedCollection(Attachment, MockBot as unknown as Client)
+            const msg = createMockMessage({ attachments })
+            const parser = parseArguments('https://example.com/not-a-discord-attachment.jpg')
+
+            const result = await optionsFromMessage(msg, parser, opts)
+
+            expect(result.attachment1).toBeUndefined()
+            expect(result.fallback).toBe('https://example.com/not-a-discord-attachment.jpg') // URL gets passed to next option
+        })
+
+        test('handles non-URL string as attachment argument', async () => {
+            const opts: ChatCommandOptions[] = [
+                {
+                    type: ApplicationCommandOptionTypes.ATTACHMENT,
+                    name: 'attachment1',
+                    description: 'desc',
+                    required: false,
+                },
+                // Add a string option to consume the non-URL string
+                {
+                    type: ApplicationCommandOptionTypes.STRING,
+                    name: 'fallback',
+                    description: 'desc',
+                    required: false,
+                },
+            ]
+
+            const attachments = new TypedCollection(Attachment, MockBot as unknown as Client)
+            const msg = createMockMessage({ attachments })
+            const parser = parseArguments('not-a-url')
+
+            const result = await optionsFromMessage(msg, parser, opts)
+
+            expect(result.attachment1).toBeUndefined()
+            expect(result.fallback).toBe('not-a-url') // String gets passed to next option
+        })
+
+        test('handles required attachment option with no attachment or URL', async () => {
+            const opts: ChatCommandOptions[] = [
+                {
+                    type: ApplicationCommandOptionTypes.ATTACHMENT,
+                    name: 'attachment1',
+                    description: 'desc',
+                    required: true,
+                },
+            ]
+
+            const attachments = new TypedCollection(Attachment, MockBot as unknown as Client)
+            const msg = createMockMessage({ attachments })
+            const parser = parseArguments('')
+
+            await expect(optionsFromMessage(msg, parser, opts)).rejects.toThrow(UserError)
+        })
+
         test('handles validation errors', async () => {
             const opts = [
                 { type: ApplicationCommandOptionTypes.STRING, name: 'string1', description: 'desc', required: true },

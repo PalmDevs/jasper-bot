@@ -12,6 +12,7 @@ import {
     type ApplicationCommandOptionsSubCommandGroup,
     type ApplicationCommandOptionsUser,
     ApplicationCommandOptionTypes,
+    Attachment,
     type CommandInteraction,
     type Message,
     type Role,
@@ -153,6 +154,11 @@ const RoleRegex = /^(?:<@&)?(\d+)(?:>)?$/
 const UserRegex = /^(?:<@)?(\d+)(?:>)?$/
 const ChannelRegex = /^(?:<#)?(\d+)(?:>)?$/
 
+const AttachmentUrlRegex =
+    /^https:\/\/(?:cdn\.discordapp\.com|media\.discordapp\.net)\/attachments\/\d+\/(\d+)\/([^?]+)\??/g
+
+export const UnknownContentLength = -1
+
 const Errors = {
     Missing: 1 << 0,
     Invalid: 1 << 1,
@@ -168,6 +174,9 @@ interface Context {
     get: () => string | undefined
     arg: string | undefined
     opts: Record<string, any>
+    // ATTACHMENTS
+    attachments?: MapIterator<Attachment>
+    attachmentUrls?: RegExpStringIterator<RegExpExecArray>
 }
 
 interface Confirmation<T extends ApplicationCommandOptionTypes | ChatCommandOptionTypes> {
@@ -671,9 +680,53 @@ async function handleRoleOption(opt: ApplicationCommandOptionsRole, ctx: Context
 }
 
 async function handleAttachmentOption(opt: ApplicationCommandOptionsAttachment, ctx: Context) {
-    const { opts, msg } = ctx
+    ctx.attachments ??= ctx.msg.attachments.values()
 
-    const attachment = msg.attachments.first() ?? msg.embeds[0]?.image?.url
+    const { opts, msg, get, attachments } = ctx
+
+    let attachment = attachments.next().value
+    if (!attachment) {
+        const url = get()
+        if (url) {
+            // biome-ignore lint/suspicious/noAssignInExpressions: This is readable
+            const matches = (ctx.attachmentUrls ??= url.matchAll(AttachmentUrlRegex))
+            const match = matches.next().value
+            if (match)
+                attachment = new Attachment(
+                    {
+                        filename: match[2]!,
+                        id: match[1]!,
+                        url,
+                        proxy_url: url,
+                        size: await fetch(url)
+                            .then(res => {
+                                const length = Number(res.headers.get('Content-Length'))
+                                if (Number.isNaN(length)) {
+                                    log.error(
+                                        `${ChatCommand.name}#${ChatCommand.optionsFromMessage.name}`,
+                                        `Attachment has no Content-Length header: ${url}`,
+                                    )
+
+                                    return UnknownContentLength
+                                }
+
+                                return length
+                            })
+                            .catch(err => {
+                                log.error(
+                                    `${ChatCommand.name}#${ChatCommand.optionsFromMessage.name}`,
+                                    `Failed to fetch attachment ${url}: ${err}`,
+                                )
+
+                                return UnknownContentLength
+                            }),
+                    },
+                    msg.client,
+                )
+            else ctx.arg = url
+        }
+    }
+
     if (!attachment) {
         if (opt.required) ctx.err = Errors.Missing
         return
