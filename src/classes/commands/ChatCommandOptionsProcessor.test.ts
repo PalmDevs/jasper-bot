@@ -1,12 +1,14 @@
 import { describe, expect, mock, test } from 'bun:test'
 import { ApplicationCommandOptionTypes, Attachment, type Client, TypedCollection } from 'oceanic.js'
 import { createMockMessage, MockAttachment, MockBot, MockChannel, MockRole, MockUser } from '~/__tests__/mocks'
-import { getChannel } from '~/utils/channels'
+import { setupModuleMocks } from '~/__tests__/setup'
 import { parseArguments } from '~/utils/parsers'
 import { UserError } from '../Error'
 import { ChatCommandOptionTypes } from './ChatCommandConstants'
-import { optionsFromInteraction, optionsFromMessage } from './ChatCommandOptionsProcessor'
+import { optionsFromInteraction, optionsFromMessage, UnknownContentLength } from './ChatCommandOptionsProcessor'
 import type { ChatCommandOptions, ChatCommandOptionsStringWithResolver } from './ChatCommand'
+
+setupModuleMocks()
 
 describe('ChatCommandOptionsProcessor', () => {
     describe('optionsFromMessage', () => {
@@ -162,8 +164,6 @@ describe('ChatCommandOptionsProcessor', () => {
         })
 
         test('parses channel options', async () => {
-            mock(getChannel).mockImplementation(() => Promise.resolve(MockChannel))
-
             const opts = [
                 { type: ApplicationCommandOptionTypes.CHANNEL, name: 'channel1', description: 'desc', required: true },
             ] as ChatCommandOptions[]

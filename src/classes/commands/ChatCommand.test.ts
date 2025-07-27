@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, mock, test } from 'bun:test'
+import { describe, expect, test } from 'bun:test'
 import {
     ApplicationCommandOptionTypes,
     ApplicationCommandTypes,
@@ -12,44 +12,17 @@ import {
     createMockMessage,
     createMockTrigger,
     MockBot,
-    MockChannel,
     MockCommandInteraction,
-    MockMember,
 } from '~/__tests__/mocks'
-import { getChannel } from '~/utils/channels'
-import { getMember } from '~/utils/guilds'
-import { getMessageReference } from '~/utils/messages'
+import { setupBeforeEach, setupModuleMocks } from '~/__tests__/setup'
 import { ChatCommand } from './ChatCommand'
 import { ChatCommandOptionTypes } from './ChatCommandConstants'
 import { CommandAccessMatchMode, CommandTriggers } from './Command'
 
-// Module mocks
-mock.module('~/context', () => ({
-    bot: MockBot,
-    log: console,
-}))
-
-mock.module('oceanic.js', () => ({
-    CommandInteraction: MockCommandInteraction,
-}))
-
-// Utility function mocks
-mock(getMember).mockImplementation(() => Promise.resolve(MockMember))
-mock(getChannel).mockImplementation(() => Promise.resolve(MockChannel))
-mock(getMessageReference).mockImplementation(() => Promise.resolve(createMockMessage()))
+setupModuleMocks()
 
 describe('ChatCommand', () => {
-    beforeEach(() => {
-        // Reset all mocks before each test
-        mock(getMember).mockReset()
-        mock(getChannel).mockReset()
-        mock(getMessageReference).mockReset()
-
-        // Set up default implementations
-        mock(getMember).mockImplementation(() => Promise.resolve(MockMember))
-        mock(getChannel).mockImplementation(() => Promise.resolve(MockChannel))
-        mock(getMessageReference).mockImplementation(() => Promise.resolve(createMockMessage()))
-    })
+    setupBeforeEach()
 
     test('canExecuteViaTrigger returns correct boolean', () => {
         const cmd = createBasicCommand({ triggers: [CommandTriggers.PlatformImplementation] })
