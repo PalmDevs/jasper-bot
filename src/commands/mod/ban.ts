@@ -40,6 +40,21 @@ export default new ChatCommand({
             description: 'Any proof?',
         },
         {
+            name: 'proof_2',
+            type: ApplicationCommandOptionTypes.ATTACHMENT,
+            description: 'Any more proof?',
+        },
+        {
+            name: 'proof_3',
+            type: ApplicationCommandOptionTypes.ATTACHMENT,
+            description: "Alright, I think that's enough?",
+        },
+        {
+            name: 'proof_4',
+            type: ApplicationCommandOptionTypes.ATTACHMENT,
+            description: 'How many do you want to put?',
+        },
+        {
             name: 'reason',
             type: ApplicationCommandOptionTypes.STRING,
             description: 'What for?',
@@ -50,7 +65,7 @@ export default new ChatCommand({
     triggers: DefaultCommandTriggers,
     contexts: [InteractionContextTypes.GUILD],
     integrationTypes: [ApplicationIntegrationTypes.GUILD_INSTALL],
-    async execute(context, { user, dmd, proof, reason }, actions) {
+    async execute(context, { user, dmd, proof, proof_2, proof_3, proof_4, reason }, actions) {
         const member = await getMember(context.trigger.guildID, user.id)
         if (member && !(await isMemberManageable(member)))
             throw new SelfError(string(s.generic.command.error.user.notManageable, member.mention))
@@ -75,7 +90,7 @@ export default new ChatCommand({
             await actions.reply({
                 embeds: [banEmbed],
             }),
-            proof?.url,
+            [proof, proof_2, proof_3, proof_4],
         )
     },
 })

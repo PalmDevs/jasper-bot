@@ -41,6 +41,21 @@ export default new ChatCommand({
             description: 'Any proof?',
         },
         {
+            name: 'proof_2',
+            type: ApplicationCommandOptionTypes.ATTACHMENT,
+            description: 'Any more proof?',
+        },
+        {
+            name: 'proof_3',
+            type: ApplicationCommandOptionTypes.ATTACHMENT,
+            description: "Alright, I think that's enough?",
+        },
+        {
+            name: 'proof_4',
+            type: ApplicationCommandOptionTypes.ATTACHMENT,
+            description: 'How many do you want to put?',
+        },
+        {
             name: 'reason',
             type: ApplicationCommandOptionTypes.STRING,
             description: 'What for?',
@@ -51,7 +66,7 @@ export default new ChatCommand({
     triggers: DefaultCommandTriggers,
     contexts: [InteractionContextTypes.GUILD],
     integrationTypes: [ApplicationIntegrationTypes.GUILD_INSTALL],
-    async execute({ executor, trigger }, { user, duration, proof, reason }, actions) {
+    async execute({ executor, trigger }, { user, duration, proof, proof_2, proof_3, proof_4, reason }, actions) {
         duration ??= MaxDuration
 
         const member = await getMember(trigger.guildID, user.id)
@@ -83,7 +98,7 @@ export default new ChatCommand({
             await actions.reply({
                 embeds: [muteEmbed],
             }),
-            proof?.url,
+            [proof, proof_2, proof_3, proof_4],
         )
     },
 })
