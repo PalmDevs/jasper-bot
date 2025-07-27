@@ -142,7 +142,7 @@ const STRINGS = {
             action: (tag: string) => `Muted ${tag}`,
             reason: {
                 accountTooNew: (timestampSecs: number) =>
-                    `Account too new. Created <t:${timestampSecs}> (<t:${timestampSecs}:R>)`,
+                    `Account too new. Created at <t:${timestampSecs}> (<t:${timestampSecs}:R>).`,
             },
         },
         nick: {
