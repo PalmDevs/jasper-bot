@@ -77,16 +77,24 @@ async function respondWithAi(msg: Message) {
         if (!config.ai?.dm) return
     } else if (!config.ai?.guilds[channel.guildID]) return
 
-    channel.sendTyping()
+    await channel.sendTyping()
+    log.debug(LogTag, `Generating AI response for message ${msg.id}`)
 
-    const content = await generateFromMessage(msg)
-    await channel.createMessage({
-        messageReference: {
-            failIfNotExists: true,
-            messageID: msg.id,
-        },
-        content,
-    })
+    try {
+        const content = await generateFromMessage(msg)
+        log.debug(LogTag, `AI response generated for message ${msg.id}:`, content)
+
+        await channel.createMessage({
+            messageReference: {
+                failIfNotExists: true,
+                messageID: msg.id,
+            },
+            content,
+        })
+    } catch (e) {
+        log.error(LogTag, `Failed to generate AI response for message ${msg.id}:`, e)
+        await msg.createReaction(Emojis.mentioned)
+    }
 }
 
 function getActualMessageContentAndTriggerInfo(
