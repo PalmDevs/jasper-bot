@@ -112,10 +112,11 @@ function getActualMessageContentAndTriggerInfo(
     if (prefixLength) return [content.slice(prefixLength).trimStart(), false, false]
 
     if (config.prefix.mentions) {
-        const mention = `<@${msg.client.user.id}>`
+        const id = msg.client.user.id
+        const mention = `<@${id}>`
         if (content.startsWith(mention)) return [content.slice(mention.length).trimStart(), false, true]
 
-        if (msg.mentions.users.includes(msg.client.user)) {
+        if (msg.mentions.users.some(u => u.id === id)) {
             // If we don't have a message reference, it's a manual mention, so we remove the last mention from the content
             if (!msg.messageReference) {
                 const lastMentionIndex = content.lastIndexOf(mention)
