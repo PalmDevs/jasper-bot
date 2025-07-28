@@ -66,6 +66,7 @@ export interface Config {
         guilds: {
             [guildId: string]: {
                 roles: string[]
+                decancer?: true
                 log?: {
                     channel: string
                     thread?: string

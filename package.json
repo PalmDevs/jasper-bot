@@ -29,6 +29,7 @@
   "dependencies": {
     "@sapphire/duration": "^1.2.0",
     "chalk-template": "^1.1.0",
+    "decancer": "^3.3.3",
     "drizzle-orm": "^0.44.3",
     "fast-fuzzy": "^1.12.0",
     "oceanic.js": "^1.12.0"

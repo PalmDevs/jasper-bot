@@ -9,6 +9,7 @@ import IsCommand from './fun/is'
 import AboutCommand from './misc/about'
 import ReplyCommand from './misc/reply'
 import BanCommand from './mod/ban'
+import DecancerCommand from './mod/decancer'
 import MuteCommand from './mod/mute'
 import NickCommand from './mod/nick'
 import PurgeCommand from './mod/purge'
@@ -30,6 +31,7 @@ export const cmds = [
     ReplyCommand,
     AboutCommand,
     BanCommand,
+    DecancerCommand,
     MuteCommand,
     NickCommand,
     PurgeCommand,

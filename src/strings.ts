@@ -28,6 +28,10 @@ const STRINGS = {
         ban: {
             action: (tag: string) => `Banned ${tag}`,
         },
+        decancer: {
+            action: (tag: string) => `Decancered ${tag}`,
+            noResult: subtext('(Name already clean)'),
+        },
         is: {
             action: [
                 'Yeah, probably.',

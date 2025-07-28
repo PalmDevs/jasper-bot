@@ -6,6 +6,7 @@
       "dependencies": {
         "@sapphire/duration": "^1.2.0",
         "chalk-template": "^1.1.0",
+        "decancer": "^3.3.3",
         "drizzle-orm": "^0.44.3",
         "fast-fuzzy": "^1.12.0",
         "oceanic.js": "^1.12.0",
@@ -117,6 +118,32 @@
 
     "@types/ws": ["@types/ws@8.18.1", "", { "dependencies": { "@types/node": "*" } }, "sha512-ThVF6DCVhA8kUGy+aazFQ4kXQ7E1Ty7A3ypFOe0IcJV8O/M511G99AW24irKrW56Wt44yG9+ij8FaqoBGkuBXg=="],
 
+    "@vierofernando/decancer-android-arm-eabi": ["@vierofernando/decancer-android-arm-eabi@3.3.3", "", { "os": "android", "cpu": "arm" }, "sha512-9KWlEiTAMGOfM5b89/bGLR1fQu3LEKxejp+PqyhokVSSGph0NyZsFMg/SAZs6RNnZfvLsNcZ+VnmC0by1vYXUg=="],
+
+    "@vierofernando/decancer-android-arm64": ["@vierofernando/decancer-android-arm64@3.3.3", "", { "os": "android", "cpu": "arm64" }, "sha512-DFGNiXX2dSSAz1APOHERSHjG3PDrwbJdpH3567Wptqy7rA+1bmJb841K9sI87NrttVfpDyXui7ekXCBn51ey0g=="],
+
+    "@vierofernando/decancer-darwin-arm64": ["@vierofernando/decancer-darwin-arm64@3.3.3", "", { "os": "darwin", "cpu": "arm64" }, "sha512-DMFZT7OTRn4UMR2d7VbML5F/isD2dkcvocQOYI5n2+bcH/7XYxsLe9yFIHL0PkUDJWYCYfe/j2Tbc6vfOiPq8g=="],
+
+    "@vierofernando/decancer-darwin-x64": ["@vierofernando/decancer-darwin-x64@3.3.3", "", { "os": "darwin", "cpu": "x64" }, "sha512-6PldDASDQQaVMAEFlyzm8zZp7xe3u8Gi9IrxrhyD0CaA8JP1EmeoB0C4Kr0HfFYOplv2l7aTNZBWogbTHrqjBA=="],
+
+    "@vierofernando/decancer-freebsd-x64": ["@vierofernando/decancer-freebsd-x64@3.3.3", "", { "os": "freebsd", "cpu": "x64" }, "sha512-IBWGUCDKECDzXF9Xfye2NeI023so6NPhDD14FIcVwDlYks7b2Spb/B1lK/AVV0yg3FNiuczQdGxqujVQ3vA2DA=="],
+
+    "@vierofernando/decancer-linux-arm-gnueabihf": ["@vierofernando/decancer-linux-arm-gnueabihf@3.3.3", "", { "os": "linux", "cpu": "arm" }, "sha512-qs9/Z0IPhDDcVPl2vl1/HBqCZOIEqaPs3vcIz70XtfJBvJwjOYlyZ25MOE9ZuGLkTlf9r5+WRG1lEG2ZyALEQw=="],
+
+    "@vierofernando/decancer-linux-arm64-gnu": ["@vierofernando/decancer-linux-arm64-gnu@3.3.3", "", { "os": "linux", "cpu": "arm64" }, "sha512-VQQYtK1p1PHkbI0SH4N4xIRBTbfd+ByVyGy/3+UOXGp4S3SBbBN8cuKtZRDtFKgg7FwvqzbVMG/p5ApfyBfz6w=="],
+
+    "@vierofernando/decancer-linux-arm64-musl": ["@vierofernando/decancer-linux-arm64-musl@3.3.3", "", { "os": "linux", "cpu": "arm64" }, "sha512-gBfb7yr2wlD8jfzFBxdggx5VgmjcvzGs7Gl3lwbfaitOdK61bTMVX2Gn0yiXghSz0Ue96N3s0wOkSP+E1/gydg=="],
+
+    "@vierofernando/decancer-linux-x64-gnu": ["@vierofernando/decancer-linux-x64-gnu@3.3.3", "", { "os": "linux", "cpu": "x64" }, "sha512-wuvOsU7Ur1wiQlNArmkUi1ZNH/8CExO/M3LK2rWDaLvgskdt81TBxTHYzP0cjshW2FE5r7rkLPhwyVnaNVlCFg=="],
+
+    "@vierofernando/decancer-linux-x64-musl": ["@vierofernando/decancer-linux-x64-musl@3.3.3", "", { "os": "linux", "cpu": "x64" }, "sha512-Y25fbInKQP0JYqxKsKvJIuGRyc9Q9WT/XaZeT3e4DG3R2u0TXnrXKTK2Rf9h8dcLEkcKpcQCF3cjWMZXffJetw=="],
+
+    "@vierofernando/decancer-win32-arm64-msvc": ["@vierofernando/decancer-win32-arm64-msvc@3.3.3", "", { "os": "win32", "cpu": "arm64" }, "sha512-6I+EA0i5c2BqOstRjoDDwpvG0ASk0HwpEu/2r+O+/T5SpTnBTOs11Y1Uk/2N/ii/vSiiOaFM3bueaNqAkTiyWg=="],
+
+    "@vierofernando/decancer-win32-ia32-msvc": ["@vierofernando/decancer-win32-ia32-msvc@3.3.3", "", { "os": "win32", "cpu": "ia32" }, "sha512-V2X+X0OOozrItxEEQdvrvqgNZo7VZYXEVy/KB7Qipw2pCzIVMw2aG5fez8eNAz2hvipG/U3hYBMmk+yMbnkD1Q=="],
+
+    "@vierofernando/decancer-win32-x64-msvc": ["@vierofernando/decancer-win32-x64-msvc@3.3.3", "", { "os": "win32", "cpu": "x64" }, "sha512-KWv2QShAg/PosR2PBoTrWU0+K1nE7iwIOqkUCDb0iqagdXTLE/gskm8dDQMP8pIE497HU3a0dLfn5MGQn8AF8g=="],
+
     "bindings": ["bindings@1.5.0", "", { "dependencies": { "file-uri-to-path": "1.0.0" } }, "sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ=="],
 
     "buffer-from": ["buffer-from@1.1.2", "", {}, "sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ=="],
@@ -130,6 +157,8 @@
     "csstype": ["csstype@3.1.3", "", {}, "sha512-M1uQkMl8rQK/szD0LNhtqxIPLpimGm8sOBwU7lLnCpSbTyY3yeU1Vc7l4KT5zT4s/yOxHH5O7tIuuLOCnLADRw=="],
 
     "debug": ["debug@4.4.0", "", { "dependencies": { "ms": "^2.1.3" } }, "sha512-6WTZ/IxCY/T6BALoZHaE4ctp9xm+Z5kY/pzYaCHRFeyVhojxlrm+46y68HA6hr0TcwEssoxNiDEUJQjfPZ/RYA=="],
+
+    "decancer": ["decancer@3.3.3", "", { "optionalDependencies": { "@vierofernando/decancer-android-arm-eabi": "3.3.3", "@vierofernando/decancer-android-arm64": "3.3.3", "@vierofernando/decancer-darwin-arm64": "3.3.3", "@vierofernando/decancer-darwin-x64": "3.3.3", "@vierofernando/decancer-freebsd-x64": "3.3.3", "@vierofernando/decancer-linux-arm-gnueabihf": "3.3.3", "@vierofernando/decancer-linux-arm64-gnu": "3.3.3", "@vierofernando/decancer-linux-arm64-musl": "3.3.3", "@vierofernando/decancer-linux-x64-gnu": "3.3.3", "@vierofernando/decancer-linux-x64-musl": "3.3.3", "@vierofernando/decancer-win32-arm64-msvc": "3.3.3", "@vierofernando/decancer-win32-ia32-msvc": "3.3.3", "@vierofernando/decancer-win32-x64-msvc": "3.3.3" } }, "sha512-UHqmJ4S63JJiTjnZ/uRxidLJpQRI9Vz2uVIfF+sKGlFHiBJbLRH97M270ogzEE9ebv9AkKuPCFg5ocuG+WVNqA=="],
 
     "discord-api-types": ["discord-api-types@0.37.120", "", {}, "sha512-7xpNK0EiWjjDFp2nAhHXezE4OUWm7s1zhc/UXXN6hnFFU8dfoPHgV0Hx0RPiCa3ILRpdeh152icc68DGCyXYIw=="],
 

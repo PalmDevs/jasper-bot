@@ -1,6 +1,9 @@
 import assert from 'assert'
 import { bot, log } from '~/context'
+import { decancer } from './decancer'
 import type { Member, Role } from 'oceanic.js'
+
+const LogTag = 'utils/guilds'
 
 export async function getGuild(guildId: string) {
     try {
@@ -9,6 +12,19 @@ export async function getGuild(guildId: string) {
     } catch (e) {
         log.trace('getGuild', 'Failed to get guild:', guildId, e)
         return null
+    }
+}
+
+export async function decancerMember(member: Member) {
+    const name = member.displayName
+    const decancered = decancer(name)
+
+    if (!decancered.equals(name)) {
+        log.info(LogTag, `Decancered ${member.id}: ${name} -> ${decancered}`)
+
+        const nick = decancered.toString().trim() || member.username
+        await member.edit({ nick })
+        return nick
     }
 }
 
