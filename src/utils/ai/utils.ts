@@ -8,7 +8,7 @@ import type { MessageData } from './types'
 
 export async function formatMessage(msg: Message, recurse = MaxLinkFollow, linked = false): Promise<string> {
     const { author: user } = msg
-    const { username: uname, id: uid, tag: utag } = user
+    const { globalName: ugname, username: uname, id: uid, tag: utag } = user
 
     const tags: string[] = []
 
@@ -18,7 +18,7 @@ export async function formatMessage(msg: Message, recurse = MaxLinkFollow, linke
 
     const node = linked ? 'linked' : 'message'
 
-    let contentText = `<${node} name="${sanitizeAttribute(uname)}" full_name="${sanitizeAttribute(utag)}" tags="${tags.join(', ')}">\n`
+    let contentText = `<${node} name="${sanitizeAttribute(ugname ?? uname)}" full_name="${sanitizeAttribute(utag)}" tags="${tags.join(', ')}">\n`
     contentText += sanitizeValue(msg.content)
     contentText += `\n</${node}>`
 
@@ -43,6 +43,9 @@ export function historyWithGlobalContext(history: MessageData) {
         // Add message after lastIndex if it's not a duplicate
         messages.splice(lastIndex + 1, 0, msg)
     }
+
+    // First content should be user message
+    while (messages[0]?.role !== 'user') messages.shift()
 
     return messages
 }
