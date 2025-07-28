@@ -1,11 +1,9 @@
 import decancer_ from 'decancer'
 
 export function decancer(input: string) {
-    const inst = decancer_(input, {
+    return decancer_(input, {
         asciiOnly: true,
+        retainEmojis: true,
+        retainGreek: true,
     })
-
-    inst.replace(' ', '')
-
-    return inst
 }
