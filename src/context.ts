@@ -1,4 +1,6 @@
+import googleAI, { googleAIPlugin } from '@genkit-ai/googleai'
 import chalkTemplate from 'chalk-template'
+import { genkit } from 'genkit'
 import { Client, type CreateMessageOptions, Intents } from 'oceanic.js'
 import type { AnyCommand } from './classes/commands/Command'
 
@@ -40,6 +42,15 @@ export const bot = new Client({
     },
 })
 
+export const ai = genkit({
+    plugins: [
+        googleAIPlugin({
+            apiKey: process.env.GEMINI_API_KEY,
+        }),
+    ],
+    model: googleAI.model('gemini-2.0-flash-lite'),
+})
+
 export const log = {
     error: (tag, ...args) => console.error(chalkTemplate`{redBright ERROR >} {gray [${tag}]:}`, ...args),
     warn: (tag, ...args) => console.warn(chalkTemplate`{yellowBright WARN >} {gray [${tag}]:}`, ...args),
@@ -58,6 +69,12 @@ export const log = {
 export interface Config {
     admin: {
         users: string[]
+    }
+    ai?: {
+        dm?: boolean
+        guilds: {
+            [guildId: string]: boolean
+        }
     }
     mod?: {
         mute?: {

@@ -13,7 +13,7 @@
     "fix": "biome check . --write"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.1.1",
+    "@biomejs/biome": "^2.1.2",
     "@types/bun": "latest",
     "drizzle-kit": "^0.31.4"
   },
@@ -24,9 +24,11 @@
     "@biomejs/biome",
     "erlpack",
     "esbuild",
+    "protobufjs",
     "zlib-sync"
   ],
   "dependencies": {
+    "@genkit-ai/googleai": "^1.15.5",
     "@sapphire/duration": "^1.2.0",
     "chalk-template": "^1.1.0",
     "decancer": "^3.3.3",

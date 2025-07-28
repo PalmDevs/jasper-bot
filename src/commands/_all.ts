@@ -4,8 +4,6 @@ import EvalCommand from './admin/eval'
 import RegisterCommand from './admin/register'
 import StopCommand from './admin/stop'
 import ThrowCommand from './admin/throw'
-import HelloCommand from './fun/hello'
-import IsCommand from './fun/is'
 import AboutCommand from './misc/about'
 import ReplyCommand from './misc/reply'
 import BanCommand from './mod/ban'
@@ -26,8 +24,6 @@ export const cmds = [
     StopCommand,
     RegisterCommand,
     ThrowCommand,
-    HelloCommand,
-    IsCommand,
     ReplyCommand,
     AboutCommand,
     BanCommand,

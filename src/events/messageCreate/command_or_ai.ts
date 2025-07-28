@@ -1,9 +1,12 @@
+import assert from 'assert'
 import { InteractionContextTypes, type Message } from 'oceanic.js'
 import { inspect } from 'util'
 import { ChatCommand } from '~/classes/commands/ChatCommand'
 import { Command, CommandTriggers } from '~/classes/commands/Command'
 import { Emojis } from '~/constants'
 import { bot, commands, config, log } from '~/context'
+import { generateFromMessage } from '~/utils/ai'
+import { getChannel, isTextableChannel } from '~/utils/channels'
 import { parseArguments } from '~/utils/parsers'
 import { handleChatCommandError } from '../_shared'
 import type { ChatCommandExecuteContext } from '~/classes/commands/ChatCommand'
@@ -15,7 +18,7 @@ const LogTag = `events/${EventName}/${EventHandlerName}`
 bot.on(EventName, async msg => {
     if (msg.author.bot) return
 
-    const [content, triggeredByReplyMentions] = getActualMessageContentAndTriggerInfo(msg)
+    const [content, replyMentions, mentions] = getActualMessageContentAndTriggerInfo(msg)
     if (content === undefined) return
 
     let cmdName = ''
@@ -29,14 +32,18 @@ bot.on(EventName, async msg => {
     cmdName = cmdName.toLowerCase()
 
     const cmd = commands.get(cmdName)
-    if (!cmd) return
+    if (!cmd) {
+        if (mentions) await respondWithAi(msg)
+        return
+    }
+
     if (!(cmd instanceof ChatCommand))
         return log.error(LogTag, `Command ${cmdName} is not a chat command!`, inspect(cmd))
 
     if (
         !Command.canExecuteViaTrigger(
             cmd,
-            triggeredByReplyMentions ? CommandTriggers.ChatMessagePrefixless : CommandTriggers.ChatMessage,
+            replyMentions ? CommandTriggers.ChatMessagePrefixless : CommandTriggers.ChatMessage,
         ) ||
         !Command.canExecuteInContext(cmd, msg.guildID ? InteractionContextTypes.GUILD : InteractionContextTypes.BOT_DM)
     )
@@ -45,7 +52,7 @@ bot.on(EventName, async msg => {
     const args = content.slice(cmdName.length)
 
     const ctx: ChatCommandExecuteContext<any> = {
-        commandName: triggeredByReplyMentions ? '' : cmdName,
+        commandName: replyMentions ? '' : cmdName,
         executor: msg.author,
         trigger: msg,
     }
@@ -63,9 +70,29 @@ bot.on(EventName, async msg => {
     }
 })
 
-function getActualMessageContentAndTriggerInfo(msg: Message): [] | [string, boolean] {
+async function respondWithAi(msg: Message) {
+    const channel = await getChannel(msg.channelID)
+    assert(channel && isTextableChannel(channel), 'Channel not available or is not textable')
+    if (!('guildID' in channel)) {
+        if (!config.ai?.dm) return
+    } else if (!config.ai?.guilds[channel.guildID]) return
+
+    channel.sendTyping()
+
+    const content = await generateFromMessage(msg)
+    await channel.createMessage({
+        messageReference: {
+            failIfNotExists: true,
+            messageID: msg.id,
+        },
+        content,
+    })
+}
+
+function getActualMessageContentAndTriggerInfo(
+    msg: Message,
+): [] | [content: string, replyMentions: boolean, mentions: boolean] {
     const { content } = msg
-    let triggeredByReplyMentions = false
     let prefixLength = 0
 
     for (const prefix of config.prefix.matches)
@@ -74,14 +101,13 @@ function getActualMessageContentAndTriggerInfo(msg: Message): [] | [string, bool
             break
         }
 
-    if (prefixLength) return [content.slice(prefixLength).trimStart(), triggeredByReplyMentions]
+    if (prefixLength) return [content.slice(prefixLength).trimStart(), false, false]
 
     if (config.prefix.mentions) {
         const mention = `<@${msg.client.user.id}>`
-        if (content.startsWith(mention)) return [content.slice(mention.length).trimStart(), triggeredByReplyMentions]
+        if (content.startsWith(mention)) return [content.slice(mention.length).trimStart(), false, true]
 
-        if (msg.mentions.users.some(u => u.id === msg.client.user.id)) {
-            triggeredByReplyMentions = true
+        if (msg.mentions.users.includes(msg.client.user)) {
             // If we don't have a message reference, it's a manual mention, so we remove the last mention from the content
             if (!msg.messageReference) {
                 const lastMentionIndex = content.lastIndexOf(mention)
@@ -89,11 +115,12 @@ function getActualMessageContentAndTriggerInfo(msg: Message): [] | [string, bool
                     return [
                         content.substring(0, lastMentionIndex) +
                             content.substring(lastMentionIndex + mention.length, content.length).trimEnd(),
-                        triggeredByReplyMentions,
+                        true,
+                        true,
                     ]
             }
 
-            return [content, triggeredByReplyMentions]
+            return [content, true, true]
         }
     }
 
