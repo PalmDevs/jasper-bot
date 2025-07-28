@@ -16,6 +16,7 @@ import {
     type CommandInteraction,
     type Message,
     type Role,
+    type SubCommandArray,
     type User,
     WrapperError,
 } from 'oceanic.js'
@@ -49,15 +50,26 @@ export async function optionsFromInteraction<Options extends ChatCommandOptions[
     const { options: wrapper } = intr.data
     const opts: Record<string, any> = {}
 
+    let subcommands: SubCommandArray
+
     for (const opt of options)
         try {
             switch (opt.type) {
                 case ApplicationCommandOptionTypes.SUB_COMMAND:
                 case ApplicationCommandOptionTypes.SUB_COMMAND_GROUP: {
+                    subcommands ??= wrapper.getSubCommand(true)
+                    const [sCmdOrGroup, sCmdOrEmpty] = subcommands
+
+                    const name =
+                        opt.type === ApplicationCommandOptionTypes.SUB_COMMAND
+                            ? (sCmdOrEmpty ?? sCmdOrGroup)
+                            : sCmdOrGroup
+
+                    if (name !== opt.name) continue
+
                     const { options } = opt
-                    // This is fine, as we only have at max two levels of nesting
-                    if (options) opts[opt.name] = await ChatCommand.optionsFromInteraction(intr, options)
-                    else opts[opt.name] = true // No options, just a flag
+                    opts[name] = options ? await optionsFromInteraction(intr, options) : true
+
                     break
                 }
                 case ApplicationCommandOptionTypes.STRING: {
