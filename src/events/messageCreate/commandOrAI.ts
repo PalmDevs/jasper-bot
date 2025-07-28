@@ -7,6 +7,7 @@ import { Emojis } from '~/constants'
 import { bot, commands, config, log } from '~/context'
 import { generateFromMessage } from '~/utils/ai'
 import { getChannel, isTextableChannel } from '~/utils/channels'
+import { adminOnlyPreciate, moderatorOnlyPreciate } from '~/utils/commands'
 import { parseArguments } from '~/utils/parsers'
 import { handleChatCommandError } from '../_shared'
 import type { ChatCommandExecuteContext } from '~/classes/commands/ChatCommand'
@@ -70,31 +71,37 @@ bot.on(EventName, async msg => {
     }
 })
 
+// TODO: Move this somewhere that we can share with the `hello` and `is` command.
 async function respondWithAI(msg: Message) {
-    const channel = await getChannel(msg.channelID)
-    assert(channel && isTextableChannel(channel), 'Channel not available or is not textable')
-    if (!('guildID' in channel)) {
-        if (!config.ai?.dm) return
-    } else if (!config.ai?.guilds[channel.guildID]) return
+    const context = { trigger: msg, executor: msg.author } as ChatCommandExecuteContext
 
-    await channel.sendTyping()
-    log.debug(LogTag, `Generating AI response for message ${msg.id}`)
+    // TODO: Remove this
+    if ((await adminOnlyPreciate(context)) || (await moderatorOnlyPreciate(context))) {
+        const channel = await getChannel(msg.channelID)
+        assert(channel && isTextableChannel(channel), 'Channel not available or is not textable')
+        if (!('guildID' in channel)) {
+            if (!config.ai?.dm) return
+        } else if (!config.ai?.guilds[channel.guildID]) return
 
-    try {
-        const content = await generateFromMessage(msg)
-        log.debug(LogTag, `AI response generated for message ${msg.id}:`, content)
+        await channel.sendTyping()
+        log.debug(LogTag, `Generating AI response for message ${msg.id}`)
 
-        await channel.createMessage({
-            messageReference: {
-                failIfNotExists: true,
-                messageID: msg.id,
-            },
-            content,
-        })
-    } catch (e) {
-        log.error(LogTag, `Failed to generate AI response for message ${msg.id}:`, e)
-        await msg.createReaction(Emojis.mentioned)
-    }
+        try {
+            const content = await generateFromMessage(msg)
+            log.debug(LogTag, `AI response generated for message ${msg.id}:`, content)
+
+            await channel.createMessage({
+                messageReference: {
+                    failIfNotExists: true,
+                    messageID: msg.id,
+                },
+                content,
+            })
+        } catch (e) {
+            log.error(LogTag, `Failed to generate AI response for message ${msg.id}:`, e)
+            await msg.createReaction(Emojis.mentioned)
+        }
+    } else await msg.createReaction(Emojis.mentioned)
 }
 
 function getActualMessageContentAndTriggerInfo(
