@@ -15,15 +15,18 @@ export async function getGuild(guildId: string) {
     }
 }
 
+const MinimumNickLength = 3
+
 export async function decancerMember(member: Member) {
     const name = member.displayName
     const decancered = decancer(name)
 
     if (!decancered.equals(name)) {
-        log.info(LogTag, `Decancered ${member.id}: ${name} -> ${decancered}`)
+        const maybeNick = decancered.toString().trim()
+        const nick = maybeNick.length < MinimumNickLength ? member.username : maybeNick
 
-        const nick = decancered.toString().trim() || member.username
         await member.edit({ nick })
+        log.info(LogTag, `Decancered ${member.id}: ${name} -> ${nick}`)
         return nick
     }
 }
