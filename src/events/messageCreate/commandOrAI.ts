@@ -12,7 +12,7 @@ import { handleChatCommandError } from '../_shared'
 import type { ChatCommandExecuteContext } from '~/classes/commands/ChatCommand'
 
 const EventName = 'messageCreate'
-const EventHandlerName = 'command'
+const EventHandlerName = 'commandOrAI'
 const LogTag = `events/${EventName}/${EventHandlerName}`
 
 bot.on(EventName, async msg => {
@@ -33,7 +33,7 @@ bot.on(EventName, async msg => {
 
     const cmd = commands.get(cmdName)
     if (!cmd) {
-        if (mentions) await respondWithAi(msg)
+        if (mentions) await respondWithAI(msg)
         return
     }
 
@@ -70,7 +70,7 @@ bot.on(EventName, async msg => {
     }
 })
 
-async function respondWithAi(msg: Message) {
+async function respondWithAI(msg: Message) {
     const channel = await getChannel(msg.channelID)
     assert(channel && isTextableChannel(channel), 'Channel not available or is not textable')
     if (!('guildID' in channel)) {

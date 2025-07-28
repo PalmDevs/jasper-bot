@@ -1,7 +1,7 @@
 import './ready'
 import './error'
 
-import './messageCreate/command_or_ai'
+import './messageCreate/commandOrAI'
 import './interactionCreate/command'
 
 import './guildMemberAdd/autorole'
