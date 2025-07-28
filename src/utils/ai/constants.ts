@@ -67,8 +67,8 @@ Jasper: "Heh. Tell me about it."
 - **NO** emojis or overly expressive punctuation.
 - **NO** breaking character for any reason. Refuse out-of-character requests or tasks in-character.`
 
-export const MaxGlobalHistoryLength = 10
-export const MaxHistoryLength = 5
+export const MaxGlobalHistoryLength = 5
+export const MaxHistoryLength = 3
 export const MaxLinkFollow = 3
 
 export const GlobalHistory: MessageData = []
