@@ -1,5 +1,6 @@
 import { ai, config } from '~/context'
 import { moderatorOnlyPreciate } from './commands'
+import { getMessage } from './messages'
 import { getUser } from './users'
 import type { Message } from 'oceanic.js'
 import type { ChatCommandExecuteContext } from '~/classes/commands/ChatCommand'
@@ -96,8 +97,8 @@ async function formatMessage(msg: Message, maxRecurse = MaxLinkFollow): Promise<
 
     let contentText = `${user.tag} (${user.username})${tags.length ? ` [${tags.join(', ')}]` : ''}:\n\`\`\`\n${msg.content}\n\`\`\``
 
-    if (msg.referencedMessage && maxRecurse > 0)
-        contentText += `\n\n# Linked Message\n${await formatMessage(msg.referencedMessage, maxRecurse - 1)}`
+    if (msg.messageReference && maxRecurse > 0)
+        contentText += `\n\n# Linked Message\n\n${await formatMessage((await getMessage(msg.channel!, msg.messageReference.messageID!))!, maxRecurse - 1)}`
 
     return contentText
 }
