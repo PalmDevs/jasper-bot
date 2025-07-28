@@ -2,7 +2,17 @@ import assert from 'assert'
 import { ai, config } from '~/context'
 import { getChannel, isTextableChannel } from '../channels'
 import { getUser } from '../users'
-import { BaseSystemPrompt, GlobalHistory, Histories, MaxGlobalHistoryLength, MaxHistoryLength } from './constants'
+import {
+    BaseSystemPrompt,
+    GlobalHistory,
+    Histories,
+    MaxGlobalHistoryLength,
+    MaxHistoryLength,
+    MaxOutputTokens,
+    Temparature,
+    Timeout,
+    TopKeywords,
+} from './constants'
 import { formatMessage, historyWithGlobalContext, trimHistory } from './utils'
 import type { Message } from 'oceanic.js'
 
@@ -38,11 +48,11 @@ ${Bosses.filter(Boolean)
     const messages = historyWithGlobalContext(history)
     const response = await ai.generate({
         system: BaseSystemPrompt + InfoSection,
-        abortSignal: AbortSignal.timeout(7500),
+        abortSignal: AbortSignal.timeout(Timeout),
         config: {
-            temperature: 0.8,
-            topK: 40,
-            maxOutputTokens: 25,
+            temperature: Temparature,
+            topK: TopKeywords,
+            maxOutputTokens: MaxOutputTokens,
         },
         toolChoice: 'none',
         messages,
