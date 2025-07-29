@@ -679,8 +679,6 @@ async function handleRoleOption(opt: ApplicationCommandOptionsRole, ctx: Context
                 role = r
             }
         }
-
-        console.log()
     }
 
     if (role) {
