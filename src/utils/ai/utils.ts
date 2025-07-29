@@ -22,13 +22,14 @@ import type { MessageData, MessageDataEntry } from './types'
 
 export let CurrentMessageId = 0
 
-const MessageFormatRegex = /^\[msg_id: (\d+)(?: \(reply: (\d+)\))?\] \[([^\]]+)\]: (.+)$/
+const MessageFormatRegex = /^\[msg_id: (\d+)(?: \(reply: (\d+)\))?\] \[([^\]]+)\] [0-9a-f]{8}: (.+)$/
 const UserMentionRegex = /<@(\d+)>/g
 
 export async function formatMessage(
     msg: Message,
     channel: TextableChannel,
     history: MessageData,
+    code: string,
     recurse = MaxLinkFollow,
 ): Promise<string> {
     if (CurrentMessageId > HistoryReset) CurrentMessageId = 0
@@ -51,8 +52,7 @@ export async function formatMessage(
 
     const id = CurrentMessageId++
 
-    // [msg_id: <int> (reply: <int>)] [<name>, <username> (<tags>)]: <content>
-    const secondPart = ` [${ugname ?? uname}, ${utag}${tags.length ? ` (${tags.join(', ')})` : ''}]: ${content}`
+    const secondPart = ` [${ugname ?? uname}, ${utag}${tags.length ? ` (${tags.join(', ')})` : ''}] ${code}: ${content}`
     let firstPart = `[msg_id: ${id}`
 
     const reference = msg.messageReference
@@ -70,7 +70,7 @@ export async function formatMessage(
                     role: rMsg.author.id === msg.client.user.id ? 'model' : 'user',
                     content: [
                         {
-                            text: await formatMessage(rMsg, channel, history, recurse - 1),
+                            text: await formatMessage(rMsg, channel, history, code, recurse - 1),
                         },
                     ],
                 })
