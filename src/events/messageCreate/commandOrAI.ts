@@ -1,12 +1,10 @@
-import assert from 'assert'
 import { InteractionContextTypes, type Message } from 'oceanic.js'
 import { inspect } from 'util'
 import { ChatCommand } from '~/classes/commands/ChatCommand'
 import { Command, CommandTriggers } from '~/classes/commands/Command'
 import { Emojis } from '~/constants'
 import { bot, commands, config, log } from '~/context'
-import { generateFromMessage } from '~/utils/ai'
-import { getChannel, isTextableChannel } from '~/utils/channels'
+import { respondFromMessage } from '~/utils/ai'
 import { adminOnlyPreciate, moderatorOnlyPreciate } from '~/utils/commands'
 import { parseArguments } from '~/utils/parsers'
 import { handleChatCommandError } from '../_shared'
@@ -73,35 +71,20 @@ bot.on(EventName, async msg => {
 
 // TODO: Move this somewhere that we can share with the `hello` and `is` command.
 async function respondWithAI(msg: Message) {
+    if (msg.guildID) {
+        if (!config.ai?.guilds[msg.guildID]) return
+    } else if (!config.ai?.dm) return
+
     const context = { trigger: msg, executor: msg.author } as ChatCommandExecuteContext
 
     // TODO: Remove this
-    if ((await adminOnlyPreciate(context)) || (await moderatorOnlyPreciate(context))) {
-        const channel = await getChannel(msg.channelID)
-        assert(channel && isTextableChannel(channel), 'Channel not available or is not textable')
-        if (!('guildID' in channel)) {
-            if (!config.ai?.dm) return
-        } else if (!config.ai?.guilds[channel.guildID]) return
-
-        await channel.sendTyping()
-        log.debug(LogTag, `Generating AI response for message ${msg.id}`)
-
-        try {
-            const content = await generateFromMessage(msg)
-            log.debug(LogTag, `AI response generated for message ${msg.id}:`, content)
-
-            await channel.createMessage({
-                messageReference: {
-                    failIfNotExists: true,
-                    messageID: msg.id,
-                },
-                content,
-            })
-        } catch (e) {
-            log.error(LogTag, `Failed to generate AI response for message ${msg.id}:`, e)
-            await msg.createReaction(Emojis.mentioned)
-        }
-    } else await msg.createReaction(Emojis.mentioned)
+    if ((await adminOnlyPreciate(context)) || (await moderatorOnlyPreciate(context)))
+        await respondFromMessage(msg).catch(err => {
+            log.error(LogTag, `Error responding to message ${msg.id} with AI:`, err)
+            msg.createReaction(Emojis.denied).catch(err =>
+                log.error(LogTag, `Failed to react to message ${msg.id}:`, err),
+            )
+        })
 }
 
 function getActualMessageContentAndTriggerInfo(

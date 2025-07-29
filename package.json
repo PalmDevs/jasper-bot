@@ -29,12 +29,14 @@
   ],
   "dependencies": {
     "@genkit-ai/googleai": "^1.15.5",
+    "@sapphire/async-queue": "^1.5.5",
     "@sapphire/duration": "^1.2.0",
     "chalk-template": "^1.1.0",
     "decancer": "^3.3.3",
     "drizzle-orm": "^0.44.3",
     "fast-fuzzy": "^1.12.0",
-    "oceanic.js": "^1.12.0"
+    "oceanic.js": "^1.12.0",
+    "quick-lru": "^7.0.1"
   },
   "optionalDependencies": {
     "erlpack": "^0.1.4",

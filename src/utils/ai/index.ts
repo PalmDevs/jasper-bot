@@ -1,33 +1,35 @@
 import assert from 'assert'
-import { ai, config } from '~/context'
+import { ai, config, log } from '~/context'
 import { getChannel, isTextableChannel } from '../channels'
 import { getUser } from '../users'
 import {
     BaseSystemPrompt,
-    GlobalHistory,
+    DiscordMessageIdToLLMMessageId,
     Histories,
-    MaxGlobalHistoryLength,
-    MaxHistoryLength,
     MaxOutputTokens,
     Temparature,
     Timeout,
     TopKeywords,
+    TopPercent,
 } from './constants'
-import { formatMessage, historyWithGlobalContext, trimHistory } from './utils'
+import { addHistoryEntry, CurrentMessageId, formatMessage, getResponseContent, historyWithGlobalContext } from './utils'
 import type { Message } from 'oceanic.js'
 
-export async function generateFromMessage(msg: Message) {
+const LogTag = 'utils/ai'
+
+export async function respondFromMessage(msg: Message) {
     const channel = await getChannel(msg.channelID)
     assert(channel && isTextableChannel(channel), 'Channel not available or is not textable')
 
     // biome-ignore lint/suspicious/noAssignInExpressions: This is readable
     const history = (Histories[msg.channelID] ??= [])
+    const contentText = await formatMessage(msg, channel, history)
 
-    history.push({
+    addHistoryEntry(history, {
         role: 'user',
         content: [
             {
-                text: await formatMessage(msg),
+                text: contentText,
             },
         ],
     })
@@ -45,14 +47,20 @@ ${Bosses.filter(Boolean)
   - **Server**: ${'guildID' in channel ? channel.guildID : '(None)'}
   - **Channel**: ${'name' in channel ? channel.name : '(DM)'}`
 
+    log.debug(LogTag, `Generating AI response for message ${msg.id} with content:`, contentText)
+
     const messages = historyWithGlobalContext(history)
+
+    await channel.sendTyping()
+
     const response = await ai.generate({
         system: BaseSystemPrompt + InfoSection,
         abortSignal: AbortSignal.timeout(Timeout),
         config: {
             temperature: Temparature,
             topK: TopKeywords,
-            maxOutputTokens: MaxOutputTokens,
+            topP: TopPercent,
+            maxOutputTokens: MaxOutputTokens + 25, // +25 for message formatting
         },
         toolChoice: 'none',
         messages,
@@ -60,16 +68,33 @@ ${Bosses.filter(Boolean)
 
     if (!response.message) throw new Error('No response generated')
 
-    const data = {
-        role: response.message.role,
-        content: response.message.content,
-    }
+    const responseText = response.text
 
-    GlobalHistory.push(data)
-    history.push(data)
+    log.debug(LogTag, `AI response generated for message ${msg.id}:`, responseText)
 
-    trimHistory(GlobalHistory, MaxGlobalHistoryLength)
-    trimHistory(history, MaxHistoryLength)
+    const content = getResponseContent(response.text)
+    const res = await channel.createMessage({
+        content,
+        messageReference: {
+            failIfNotExists: true,
+            messageID: msg.id,
+        },
+    })
 
-    return response.text
+    // Set before formatting message as formatMessage does CurrentMessageId++
+    // and we want to use the same ID for the response message
+    DiscordMessageIdToLLMMessageId.set(res.id, CurrentMessageId)
+
+    addHistoryEntry(
+        history,
+        {
+            role: 'model',
+            content: [
+                {
+                    text: await formatMessage(res, channel, history, 0),
+                },
+            ],
+        },
+        true,
+    )
 }
