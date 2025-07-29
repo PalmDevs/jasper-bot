@@ -1,10 +1,14 @@
 import { config } from '~/context'
 import { moderatorOnlyPreciate } from '../commands'
 import { getMessage } from '../messages'
-import { GlobalHistory, MaxLinkFollow, TagAdmin, TagModerator } from './constants'
+import { replaceAllAsync } from '../strings'
+import { getUser } from '../users'
+import { GlobalHistory, MaxLinkFollow, TagAdmin, TagModel, TagModerator } from './constants'
 import type { Message } from 'oceanic.js'
 import type { ChatCommandExecuteContext } from '~/classes/commands/ChatCommand'
 import type { MessageData } from './types'
+
+const UserMentionRegex = /<@(\d+)>/g
 
 export async function formatMessage(msg: Message, recurse = MaxLinkFollow, linked = false): Promise<string> {
     const { author: user } = msg
@@ -12,14 +16,19 @@ export async function formatMessage(msg: Message, recurse = MaxLinkFollow, linke
 
     const tags: string[] = []
 
+    if (uid === msg.client.user.id) tags.push(TagModel)
     if (config.admin.users.includes(uid)) tags.push(TagAdmin)
     if (msg.guildID && (await moderatorOnlyPreciate({ executor: user, trigger: msg } as ChatCommandExecuteContext)))
         tags.push(TagModerator)
 
     const node = linked ? 'linked' : 'message'
+    const content = await replaceAllAsync(msg.content, UserMentionRegex, async ([full, id]) => {
+        const user = await getUser(id!)
+        return user ? `@${user.globalName ?? user.username} (${user.username})` : full!
+    })
 
     let contentText = `<${node} name="${sanitizeAttribute(ugname ?? uname)}" full_name="${sanitizeAttribute(utag)}" tags="${tags.join(', ')}">\n`
-    contentText += sanitizeValue(msg.content)
+    contentText += sanitizeValue(content)
     contentText += `\n</${node}>`
 
     const reference = msg.messageReference
