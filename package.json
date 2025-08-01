@@ -9,6 +9,7 @@
     "start": "bun run build && bun run .",
     "dev": "bun run --watch src/index.ts",
     "build": "bun run scripts/build.ts",
+    "build:config": "bun run scripts/build-config.ts",
     "check": "biome check .",
     "fix": "biome check . --write"
   },

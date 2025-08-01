@@ -3,7 +3,6 @@ import type { Target } from 'bun'
 await Bun.build({
     entrypoints: ['./src/index.ts'],
     outdir: './dist',
-    format: 'esm',
     minify: {
         identifiers: false,
         syntax: true,
