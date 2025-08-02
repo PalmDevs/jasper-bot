@@ -3,7 +3,7 @@ import { ApplicationCommandOptionTypes } from 'oceanic.js'
 import { ChatCommandOptionTypes } from './classes/commands/ChatCommandConstants'
 import { Emojis } from './constants'
 import { log } from './context'
-import { bold, code, codeblock, emoji, subtext } from './utils/formatters'
+import { bold, code, codeblock, emoji, escapeMarkdown, subtext } from './utils/formatters'
 
 interface Strings {
     status: {
@@ -26,10 +26,10 @@ interface Strings {
 const STRINGS = {
     command: {
         ban: {
-            action: (tag: string) => `Banned ${tag}`,
+            action: (tag: string) => `Banned ${escapeMarkdown(tag)}`,
         },
         decancer: {
-            action: (tag: string) => `Decancered ${tag}`,
+            action: (tag: string) => `Decancered ${escapeMarkdown(tag)}`,
             noResult: subtext('(Name already clean)'),
         },
         is: {
@@ -143,14 +143,14 @@ const STRINGS = {
             ],
         },
         mute: {
-            action: (tag: string) => `Muted ${tag}`,
+            action: (tag: string) => `Muted ${escapeMarkdown(tag)}`,
             reason: {
                 accountTooNew: (timestampSecs: number) =>
                     `Account too new. Created at <t:${timestampSecs}> (<t:${timestampSecs}:R>).`,
             },
         },
         nick: {
-            action: (tag: string) => `Set nickname for ${tag}`,
+            action: (tag: string) => `Set nickname for ${escapeMarkdown(tag)}`,
             reset: subtext('(Reset nickname)'),
         },
         note: {
@@ -172,7 +172,7 @@ const STRINGS = {
             action: 'Fine.',
         },
         role: {
-            reason: (tag: string, id: string) => `via command by ${tag} (${id})`,
+            reason: (tag: string, id: string) => `via command by ${escapeMarkdown(tag)} (${id})`,
             action: {
                 added: 'Added role',
                 removed: 'Removed role',
@@ -185,7 +185,7 @@ const STRINGS = {
             action: 'Thanks, I can finally go back to doing a bunch of nothing properly.',
         },
         unmute: {
-            action: (tag: string) => `Unmuted ${tag}`,
+            action: (tag: string) => `Unmuted ${escapeMarkdown(tag)}`,
         },
         who: {
             title: ['Who am I?', 'Introduce myself? Uh...', 'What do I do? Eh...', 'Huh, what? Oh, right. Hey.'],

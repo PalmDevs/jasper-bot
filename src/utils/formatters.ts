@@ -17,3 +17,7 @@ export function bold(text: string | number) {
 export function emoji(emoji: string) {
     return `<:${emoji}>`
 }
+
+export function escapeMarkdown(text: string) {
+    return text.replaceAll(/([_*~`])/g, '\\$1')
+}
