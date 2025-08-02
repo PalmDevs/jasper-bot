@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  jasper-bot:
+    # Always rebuild after pulling changes
+    pull_policy: build
+    build: .
+    container_name: jasper-bot
+    restart: unless-stopped
+    environment:
+      DISCORD_TOKEN: ${DISCORD_TOKEN}
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+      DEBUG: ${DEBUG}
+    volumes:
+      - /data/jasper-bot/config.js:/app/config.js
+    working_dir: /app
+    command: bun start
