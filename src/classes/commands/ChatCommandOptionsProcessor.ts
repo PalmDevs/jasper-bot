@@ -551,8 +551,10 @@ async function handleUserOption(opt: ApplicationCommandOptionsUser | ChatCommand
     if (rMRMode && msg.messageReference) {
         const prioritize = rMRMode === ChatCommandOptionsWithReadMessageReferenceMode.Prioritize
         if (prioritize && arg) ctx.arg = arg
-        if (prioritize || !arg) opts[opt.name] = await getMessageReference(msg).then(it => it!.author)
-        return
+        if (prioritize || !arg) {
+            opts[opt.name] = await getMessageReference(msg).then(it => it!.author)
+            return
+        }
     }
 
     if (!arg) {
