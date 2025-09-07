@@ -39,15 +39,15 @@ export async function respondFromMessage(msg: Message) {
     const Bosses = await Promise.all(config.admin.users.map(getUser))
     const InfoSection = `
 
-## Info
+### Info
 
-  - **Code**: ${code}
-  - **Bosses**:
+  * **Code**: \`${code}\`
+  * **Bosses**:
 ${Bosses.filter(Boolean)
-    .map(b => `    * ${b!.tag} (${b!.username})`)
+    .map(b => `    - ${b!.tag} (${b!.username})`)
     .join('\n')}
-  - **Server**: ${'guildID' in channel ? channel.guildID : '(None)'}
-  - **Channel**: ${'name' in channel ? channel.name : '(DM)'}`
+  * **Server**: ${'guildID' in channel ? channel.guildID : '(None)'}
+  * **Channel**: ${'name' in channel ? channel.name : '(DM)'}`
 
     log.debug(LogTag, `Generating AI response for message ${msg.id} with content:`, contentText)
 
