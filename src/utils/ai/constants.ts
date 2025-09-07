@@ -34,6 +34,7 @@ export const Temparature = 0.8
 export const TopKeywords = 40
 export const TopPercent = 0.7
 
+export const MaxHistoryEntryExpiry = 1000 * 60 * 30 // 30 minutes
 export const MaxGlobalHistoryLength = 10
 export const MaxHistoryLength = 5
 export const MaxLinkFollow = 3

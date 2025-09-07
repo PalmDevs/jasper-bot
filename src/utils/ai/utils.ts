@@ -9,6 +9,7 @@ import {
     HistoryEntrySeparator,
     HistoryReset,
     MaxGlobalHistoryLength,
+    MaxHistoryEntryExpiry,
     MaxHistoryLength,
     MaxLinkFollow,
     TagAdmin,
@@ -127,6 +128,9 @@ export function historyWithGlobalContext(history: MessageData) {
 }
 
 export function trimHistory(history: MessageData, maxLength: number) {
+    const dateThreshold = Date.now() - MaxHistoryEntryExpiry
+    for (const entry of history) if (entry.metadata?.created ?? 0 < dateThreshold) history.shift()
+
     if (history.length > maxLength) history.splice(0, history.length - maxLength)
 }
 

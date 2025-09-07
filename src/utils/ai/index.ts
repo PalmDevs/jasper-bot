@@ -27,6 +27,10 @@ export async function respondFromMessage(msg: Message) {
     const code = crypto.getRandomValues(Buffer.alloc(4)).toHex()
     const contentText = await formatMessage(msg, channel, history, code)
 
+    const metadata = {
+        created: Date.now(),
+    }
+
     addHistoryEntry(history, {
         role: 'user',
         content: [
@@ -34,6 +38,7 @@ export async function respondFromMessage(msg: Message) {
                 text: contentText,
             },
         ],
+        metadata,
     })
 
     const Bosses = await Promise.all(config.admin.users.map(getUser))
@@ -96,6 +101,7 @@ ${Bosses.filter(Boolean)
                     text: await formatMessage(res, channel, history, code, 0),
                 },
             ],
+            metadata,
         },
         true,
     )
