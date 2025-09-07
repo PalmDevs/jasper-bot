@@ -198,6 +198,15 @@ describe('ChatCommandOptionsProcessor', () => {
             const parser2 = parseArguments('palmdevs')
             const result2 = await optionsFromMessage(msg, parser2, opts)
             expect(result2).toEqual({ user1: MockUser })
+
+            // Handle username search (non-exact match)
+            const parser3 = parseArguments('plmdvs')
+            const result3 = await optionsFromMessage(msg, parser3, opts)
+            expect(result3).toEqual({ user1: MockUser })
+
+            // Handle username search (no match)
+            const parser4 = parseArguments('xdd')
+            expect(optionsFromMessage(msg, parser4, opts)).rejects.toThrow(UserError)
         })
 
         test('parses message options', async () => {
@@ -340,6 +349,10 @@ describe('ChatCommandOptionsProcessor', () => {
             // @ts-ignore
             global.fetch = mockFetch
 
+            mock.module('~/context', () => ({
+                log: { error: () => {} },
+            }))
+
             const opts: ChatCommandOptions[] = [
                 {
                     type: ApplicationCommandOptionTypes.ATTACHMENT,
@@ -359,6 +372,8 @@ describe('ChatCommandOptionsProcessor', () => {
             expect(result.attachment1.size).toBe(UnknownContentLength) // Should default to UnknownContentLength on error
         })
 
+        const originalFetch = global.fetch
+
         test('handles attachment URL with missing Content-Length header', async () => {
             // Mock fetch with undefined Content-Length header (to trigger NaN)
             const mockFetch = mock(() =>
@@ -366,8 +381,13 @@ describe('ChatCommandOptionsProcessor', () => {
                     headers: { get: mock(() => undefined) },
                 }),
             )
+
             // @ts-ignore
             global.fetch = mockFetch
+
+            mock.module('~/context', () => ({
+                log: { error: () => {} },
+            }))
 
             const opts: ChatCommandOptions[] = [
                 {
@@ -386,6 +406,9 @@ describe('ChatCommandOptionsProcessor', () => {
 
             expect(result.attachment1).toBeDefined()
             expect(result.attachment1.size).toBe(UnknownContentLength) // Should default to UnknownContentLength when Content-Length is missing/undefined
+
+            global.fetch = originalFetch
+            mock.restore()
         })
 
         test('handles attachment URL with null Content-Length header', async () => {
@@ -415,6 +438,9 @@ describe('ChatCommandOptionsProcessor', () => {
 
             expect(result.attachment1).toBeDefined()
             expect(result.attachment1.size).toBe(0) // Number(null) returns 0, not NaN
+
+            global.fetch = originalFetch
+            mock.restore()
         })
 
         test('handles invalid attachment URL', async () => {
@@ -583,6 +609,7 @@ describe('ChatCommandOptionsProcessor', () => {
             ]
 
             const wrapper = {
+                getSubCommand: mock(() => ['group1', 'sub1']),
                 getString: mock(() => 'test'),
             } as any
 
@@ -601,7 +628,12 @@ describe('ChatCommandOptionsProcessor', () => {
                 },
             ]
 
-            const result = await optionsFromInteraction({ data: { options: {} } } as any, opts)
+            const wrapper = {
+                getSubCommand: () => ['sub1'],
+                options: {},
+            }
+
+            const result = await optionsFromInteraction({ data: { options: wrapper } } as any, opts)
 
             expect(result).toEqual({ sub1: true })
         })
