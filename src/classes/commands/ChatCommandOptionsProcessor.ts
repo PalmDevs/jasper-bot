@@ -1,5 +1,6 @@
 import assert from 'assert'
 import { fuzzy } from 'fast-fuzzy'
+import { distance } from 'fastest-levenshtein'
 import {
     type ApplicationCommandOptionsAttachment,
     type ApplicationCommandOptionsBoolean,
@@ -157,7 +158,7 @@ export async function optionsFromInteraction<Options extends ChatCommandOptions[
 const CommandArgumentSplitter = ' '
 
 const MinRoleNameMatchScore = 0.75
-const MinUserNameMatchScore = 0.9
+const MinUserNameMatchDistance = 3
 
 const BoolFalse = new Set(['false', '0', 'no', 'n', 'off', 'f'])
 const BoolTrue = new Set(['true', '1', 'yes', 'y', 'on', 't'])
@@ -587,7 +588,7 @@ async function handleUserOption(opt: ApplicationCommandOptionsUser | ChatCommand
             return
         }
 
-        if (fuzzy(arg, member.member.username) >= MinUserNameMatchScore) user = member.member.user
+        if (distance(arg, member.member.username) <= MinUserNameMatchDistance) user = member.member.user
     }
 
     if (user) {
