@@ -32,6 +32,12 @@ export const bot = new Client({
         users: true,
     },
     gateway: {
+        presence: {
+            status: 'dnd',
+        },
+        connectionProperties: {
+            browser: 'Discord Android',
+        },
         intents:
             Intents.GUILDS |
             Intents.GUILD_MESSAGES |
