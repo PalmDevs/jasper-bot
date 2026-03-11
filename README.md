@@ -24,7 +24,7 @@ Jasper is self-hostable general-purpose Discord bot that yells at you and your m
 2. Install dependencies
 
     ```sh
-    # Optional packages: `erlpack`, `zlib-sync`
+    # Optional packages: `erlpack` (gateway encoding), `zlib-sync` (gateway compression), `@snazzah/davey` (voice support)
     bun install
     ```
 
