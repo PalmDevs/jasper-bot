@@ -30,7 +30,7 @@
     "zlib-sync"
   ],
   "dependencies": {
-    "@genkit-ai/googleai": "^1.28.0",
+    "@genkit-ai/google-genai": "^1.29.0",
     "@sapphire/async-queue": "^1.5.5",
     "@sapphire/duration": "^1.2.0",
     "chalk-template": "^1.1.2",

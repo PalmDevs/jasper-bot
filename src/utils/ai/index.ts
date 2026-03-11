@@ -24,8 +24,7 @@ export async function respondFromMessage(msg: Message) {
     // biome-ignore lint/suspicious/noAssignInExpressions: This is readable
     const history = (Histories[msg.channelID] ??= [])
 
-    const code = crypto.getRandomValues(Buffer.alloc(4)).toHex()
-    const contentText = await formatMessage(msg, channel, history, code)
+    const contentText = await formatMessage(msg, channel, history)
 
     const metadata = {
         created: Date.now(),
@@ -46,7 +45,6 @@ export async function respondFromMessage(msg: Message) {
 
 ### Info
 
-  * **Code**: \`${code}\`
   * **Bosses**:
 ${Bosses.filter(Boolean)
     .map(b => `    - ${b!.tag} (${b!.username})`)
@@ -98,7 +96,7 @@ ${Bosses.filter(Boolean)
             role: 'model',
             content: [
                 {
-                    text: await formatMessage(res, channel, history, code, 0),
+                    text: await formatMessage(res, channel, history, 0),
                 },
             ],
             metadata,

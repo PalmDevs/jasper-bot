@@ -23,27 +23,25 @@ import type { MessageData, MessageDataEntry } from './types'
 
 export let CurrentMessageId = 0
 
-const MessageFormatRegex = /^\[msg_id: (\d+)(?: \(reply: (\d+)\))?\] \[([^\]]+)\] [0-9a-f]{8}: (.+)$/
 const UserMentionRegex = /<@(\d+)>/g
 
 export async function formatMessage(
     msg: Message,
     channel: TextableChannel,
     history: MessageData,
-    code: string,
     recurse = MaxLinkFollow,
 ): Promise<string> {
     if (CurrentMessageId > HistoryReset) CurrentMessageId = 0
 
     const { author: user } = msg
-    const { globalName: ugname, username: uname, tag: utag, id: uid } = user
+    const { globalName: ugname, username: uname, id: uid } = user
 
-    const tags: string[] = []
+    const roles: string[] = []
 
-    if (uid === msg.client.user.id) tags.push(TagModel)
-    if (config.admin.users.includes(uid)) tags.push(TagAdmin)
+    if (uid === msg.client.user.id) roles.push(TagModel)
+    if (config.admin.users.includes(uid)) roles.push(TagAdmin)
     if (msg.guildID && (await moderatorOnlyPreciate({ executor: user, trigger: msg } as ChatCommandExecuteContext)))
-        tags.push(TagModerator)
+        roles.push(TagModerator)
 
     // Sanitize and resolve mentions
     const content = await replaceAllAsync(sanitizeMessage(msg.content), UserMentionRegex, async ([full, id]) => {
@@ -53,13 +51,13 @@ export async function formatMessage(
 
     const id = CurrentMessageId++
 
-    const secondPart = ` [${ugname ?? uname}, ${utag}${tags.length ? ` (${tags.join(', ')})` : ''}] ${code}: ${content}`
-    let firstPart = `[msg_id: ${id}`
+    let attrs = `id=${id} user="${sanitizeAttr(ugname ?? uname)}"`
+    if (roles.length) attrs += ` role="${roles.join(',')}"`
 
     const reference = msg.messageReference
     if (reference && recurse > 0) {
         const mid = reference.messageID!
-        const rId: number | undefined = DiscordMessageIdToLLMMessageId.get(mid)
+        let rId: number | undefined = DiscordMessageIdToLLMMessageId.get(mid)
 
         if (rId === undefined) {
             const rMsg = await getMessage(channel, mid)
@@ -71,29 +69,26 @@ export async function formatMessage(
                     role: rMsg.author.id === msg.client.user.id ? 'model' : 'user',
                     content: [
                         {
-                            text: await formatMessage(rMsg, channel, history, code, recurse - 1),
+                            text: await formatMessage(rMsg, channel, history, recurse - 1),
                         },
                     ],
                 })
             }
+            rId = DiscordMessageIdToLLMMessageId.get(mid)
         }
 
-        if (rId !== undefined) firstPart += ` (reply: ${rId})`
+        if (rId !== undefined) attrs += ` reply=${rId}`
     }
-
-    firstPart += ']'
 
     DiscordMessageIdToLLMMessageId.set(msg.id, id)
 
-    return firstPart + secondPart
+    return `<msg ${attrs}>${content}</msg>`
 }
 
 export function getResponseContent(text: string): string {
-    const match = text.match(MessageFormatRegex)
-    if (!match) throw new Error(`Invalid message format: ${text}`)
-
-    const [, , , , content] = match
-    return content!
+    const content = text.replace(/<\/?msg[^>]*>/g, '').trim()
+    if (!content) throw new Error('Empty response from model')
+    return content
 }
 
 export function addHistoryEntry(history: MessageData, data: MessageDataEntry, trim?: boolean) {
@@ -135,5 +130,9 @@ export function trimHistory(history: MessageData, maxLength: number) {
 }
 
 function sanitizeMessage(content: string) {
-    return content.replaceAll(HistoryEntrySeparator, '. ')
+    return content.replaceAll(HistoryEntrySeparator, '. ').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
+}
+
+function sanitizeAttr(value: string) {
+    return value.replaceAll('"', '').replaceAll('<', '').replaceAll('>', '')
 }

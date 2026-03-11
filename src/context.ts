@@ -1,4 +1,4 @@
-import googleAI, { googleAIPlugin } from '@genkit-ai/googleai'
+import { googleAI } from '@genkit-ai/google-genai'
 import chalkTemplate from 'chalk-template'
 import { genkit } from 'genkit'
 import { Client, type CreateMessageOptions, Intents } from 'oceanic.js'
@@ -45,16 +45,17 @@ export const bot = new Client({
             Intents.MESSAGE_CONTENT |
             Intents.GUILD_MESSAGE_REACTIONS |
             Intents.GUILD_MEMBERS,
+        compress: 'zlib-stream',
     },
 })
 
 export const ai = genkit({
     plugins: [
-        googleAIPlugin({
-            apiKey: process.env.GEMINI_API_KEY,
+        googleAI({
+            apiKey: process.env.GOOGLE_API_KEY,
         }),
     ],
-    model: googleAI.model('gemini-2.5-flash-lite'),
+    model: googleAI.model('gemini-3.1-flash-lite-preview'),
 })
 
 export const log = {
