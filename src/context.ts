@@ -45,7 +45,6 @@ export const bot = new Client({
             Intents.MESSAGE_CONTENT |
             Intents.GUILD_MESSAGE_REACTIONS |
             Intents.GUILD_MEMBERS,
-        compress: 'zlib-stream',
     },
 })
 
