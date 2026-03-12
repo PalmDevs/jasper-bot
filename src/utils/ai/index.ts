@@ -47,7 +47,7 @@ export async function respondFromMessage(msg: Message) {
 
   * **Bosses**:
 ${Bosses.filter(Boolean)
-    .map(b => `    - ${b!.tag} (${b!.username})`)
+    .map(b => `    - ${b!.globalName} (@${b!.tag})`)
     .join('\n')}
   * **Server**: ${'guildID' in channel ? channel.guildID : '(None)'}
   * **Channel**: ${'name' in channel ? channel.name : '(DM)'}`
