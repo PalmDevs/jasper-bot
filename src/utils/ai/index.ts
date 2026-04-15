@@ -7,6 +7,7 @@ import {
     DiscordMessageIdToLLMMessageId,
     Histories,
     MaxOutputTokens,
+    Models,
     Temparature,
     Timeout,
     TopKeywords,
@@ -58,49 +59,60 @@ ${Bosses.filter(Boolean)
 
     await channel.sendTyping()
 
-    const response = await ai.generate({
-        system: BaseSystemPrompt + InfoSection,
-        abortSignal: AbortSignal.timeout(Timeout),
-        config: {
-            temperature: Temparature,
-            topK: TopKeywords,
-            topP: TopPercent,
-            maxOutputTokens: MaxOutputTokens + 25, // +25 for message formatting
-        },
-        toolChoice: 'none',
-        messages,
-    })
-
-    if (!response.message) throw new Error('No response generated')
-
-    const responseText = response.text
-
-    log.debug(LogTag, `AI response generated for message ${msg.id}:`, responseText)
-
-    const content = getResponseContent(response.text)
-    const res = await channel.createMessage({
-        content,
-        messageReference: {
-            failIfNotExists: true,
-            messageID: msg.id,
-        },
-    })
-
-    // Set before formatting message as formatMessage does CurrentMessageId++
-    // and we want to use the same ID for the response message
-    DiscordMessageIdToLLMMessageId.set(res.id, CurrentMessageId)
-
-    addHistoryEntry(
-        history,
-        {
-            role: 'model',
-            content: [
-                {
-                    text: await formatMessage(res, channel, history, 0),
+    // Try each model in order, if one fails, log the error and try the next one
+    for (const model of Models) {
+        try {
+            const response = await ai.generate({
+                model,
+                system: BaseSystemPrompt + InfoSection,
+                abortSignal: AbortSignal.timeout(Timeout),
+                config: {
+                    temperature: Temparature,
+                    topK: TopKeywords,
+                    topP: TopPercent,
+                    maxOutputTokens: MaxOutputTokens + 25, // +25 for message formatting
                 },
-            ],
-            metadata,
-        },
-        true,
-    )
+                toolChoice: 'none',
+                messages,
+            })
+
+            if (!response.message) throw new Error('No response generated')
+
+            const responseText = response.text
+
+            log.debug(LogTag, `AI response generated for message ${msg.id}:`, responseText)
+
+            const content = getResponseContent(response.text)
+            const res = await channel.createMessage({
+                content,
+                messageReference: {
+                    failIfNotExists: true,
+                    messageID: msg.id,
+                },
+            })
+
+            // Set before formatting message as formatMessage does CurrentMessageId++
+            // and we want to use the same ID for the response message
+            DiscordMessageIdToLLMMessageId.set(res.id, CurrentMessageId)
+
+            addHistoryEntry(
+                history,
+                {
+                    role: 'model',
+                    content: [
+                        {
+                            text: await formatMessage(res, channel, history, 0),
+                        },
+                    ],
+                    metadata,
+                },
+                true,
+            )
+
+            // Success!
+            return
+        } catch (err) {
+            log.error(LogTag, `Error generating AI response for message ${msg.id} with model ${model.name}:`, err)
+        }
+    }
 }

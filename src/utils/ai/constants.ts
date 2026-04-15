@@ -1,3 +1,4 @@
+import { googleAI } from '@genkit-ai/google-genai'
 import { AsyncQueue } from '@sapphire/async-queue'
 import QuickLRU from 'quick-lru'
 import type { MessageData } from './types'
@@ -50,6 +51,14 @@ export const HistoryReset = MaxGlobalHistoryLength + MaxHistoryLength
 export const DiscordMessageIdToLLMMessageId = new QuickLRU<string, number>({
     maxSize: HistoryReset,
 })
+
+export const Models = [
+    googleAI.model('gemini-3.1-flash-lite-preview'),
+    googleAI.model('gemini-3-flash-preview'),
+    googleAI.model('gemini-2.5-flash-lite'),
+    googleAI.model('gemini-2.5-flash'),
+    googleAI.model('gemini-2.0-flash'),
+]
 
 // TODO
 export const UserQueueTime = 3000
