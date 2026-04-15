@@ -61,6 +61,8 @@ ${Bosses.filter(Boolean)
 
     // Try each model in order, if one fails, log the error and try the next one
     for (const model of Models) {
+        log.debug(LogTag, `Attempting to generate AI response for message ${msg.id} with model ${model.name}`)
+
         try {
             const response = await ai.generate({
                 model,
