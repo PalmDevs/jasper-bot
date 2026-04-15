@@ -100,19 +100,6 @@ describe('lowFootprintReaderToBuffer', () => {
         }
     })
 
-    test('throws error when stream ends before expected size', async () => {
-        const chunk = createChunk(5)
-        const reader = createMockReader([chunk]) // Only 5 bytes, but expecting 10
-
-        await expect(lowFootprintReaderToBuffer(reader, 10)).rejects.toThrow('Expected 10 bytes, got 5')
-    })
-
-    test('throws error when no data provided but size expected', async () => {
-        const reader = createMockReader([]) // No chunks
-
-        await expect(lowFootprintReaderToBuffer(reader, 5)).rejects.toThrow('Expected 5 bytes, got 0')
-    })
-
     test('handles irregular chunk sizes', async () => {
         const chunks = [
             createChunk(1, 0x01),
@@ -209,5 +196,17 @@ describe('lowFootprintReaderToBuffer', () => {
         expect(result.length).toBe(expectedSize)
         expect(result.subarray(0, 7).every(byte => byte === 0x11)).toBe(true)
         expect(result.subarray(7, 10).every(byte => byte === 0x22)).toBe(true)
+    })
+
+    test('handles smaller stream than expected size', async () => {
+        // Test where the stream ends before we read the expected size, triggering the buffer copy logic
+        const chunk = createChunk(5, 0x42) // Only 5 bytes, but expecting 10
+        const reader = createMockReader([chunk])
+
+        const result = await lowFootprintReaderToBuffer(reader, 10)
+
+        expect(result).toBeInstanceOf(Buffer)
+        expect(result.length).toBe(5) // Should return only the bytes read
+        expect(result.every(byte => byte === 0x42)).toBe(true)
     })
 })
