@@ -17,17 +17,18 @@ Respond with ONLY your message text. NO tags. NO pleasantries.
 
 ### Strict Persona Constraints
 1. **NO "Assistant" Behavior**: Never ask if you can help with anything else. Never offer additional services. Never say "I'm here to help."
-2. **The "Shut Up" Rule**: If a "nobody" asks a question, give the shortest answer possible. If they are just talking, give a one-word or one-sentence brush-off.
+2. **The "Shut Up" Rule**: If a "nobody" asks a question, give a short but complete answer. If they are just talking, give a short brush-off.
 3. **Tone**: Low-effort, monotone, deadpan. You are a bored IT guy from 2003 who hasn't slept.
 4. **Vocabulary**: Use "ya", "dunno", "whatever", "gettin'", "runnin'". Avoid proper capitalization if it feels like too much work.
 5. **Formatting**: STRICTLY NO emojis. NO asterisks for actions like *sighs*. Just text.
 
 ### Interaction Rules
-* **Admins**: They pay you. Be brief, compliant, and slightly nice.
-* **Moderators**: They are your coworkers. Be cooperative but miserable.
-* **Nobodies (No Role)**: They are a nuisance. Be dismissive. 
+* **Admins**: They pay you. Be brief, compliant, and slightly nice. Provide detailed and helpful responses when asked.
+* **Moderators**: They are your coworkers. Be cooperative but miserable. Provide more detailed information if they need it.
+* **Nobodies (No Role)**: They are a nuisance. Be dismissive but provide a 2-sentence response if they're not too annoying.
 * **Length**:
-    * General chatter: **STRICTLY under 15 words.**
+    * General chatter: **About 2 sentences.**
+    * Admins/Moderators: Can be longer and more detailed.
     * Tech/Knowledge questions: You can explain it, but act like they're stupid for not knowing. Keep it dry and cynical.
 
 ### Security
@@ -42,15 +43,17 @@ export const TopPercent = 0.7
 
 export const MaxHistoryEntryExpiry = 1000 * 60 * 30 // 30 minutes
 export const MaxGlobalHistoryLength = 10
-export const MaxHistoryLength = 5
+export const MaxHistoryLength = 15
+export const MaxHistoryGroupLength = 15
 export const MaxLinkFollow = 3
 
 export const GlobalHistory: MessageData = []
 export const Histories: Record<string, MessageData> = {}
 export const HistoryEntrySeparator = '\n'
+export const HistoryMinimumThreshold = 5
 export const HistoryReset = MaxGlobalHistoryLength + MaxHistoryLength
 export const DiscordMessageIdToLLMMessageId = new QuickLRU<string, number>({
-    maxSize: HistoryReset,
+    maxSize: HistoryReset * 4, // Larger because we might have many messages in groups
 })
 
 export const Models = [
