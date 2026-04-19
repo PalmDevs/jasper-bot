@@ -1,4 +1,5 @@
 import assert from 'assert'
+import { Base, type Message } from 'oceanic.js'
 import { ai, config, log } from '~/context'
 import { getChannel, isTextableChannel } from '../channels'
 import { getUser } from '../users'
@@ -7,6 +8,7 @@ import {
     DiscordMessageIdToLLMMessageId,
     Histories,
     HistoryMinimumThreshold,
+    MaxHistoryEntryExpiry,
     MaxHistoryGroupLength,
     MaxOutputTokens,
     Models,
@@ -23,7 +25,6 @@ import {
     getResponseContent,
     historyWithGlobalContext,
 } from './utils'
-import type { Message } from 'oceanic.js'
 
 const LogTag = 'utils/ai'
 
@@ -38,7 +39,11 @@ export async function respondFromMessage(msg: Message) {
 
     if (history.length < HistoryMinimumThreshold) {
         try {
-            const recentMessages = await channel.getMessages({ limit: 50, before: msg.id })
+            const recentMessages = await channel.getMessages({
+                limit: 50,
+                before: msg.id,
+                after: Base.generateID(Date.now() - MaxHistoryEntryExpiry),
+            })
 
             // Group messages by author
             const groups: Message[][] = []
@@ -95,9 +100,9 @@ ${Bosses.filter(Boolean)
   * **Channel**: ${'name' in channel ? channel.name : '(DM)'}
   * **Current Time**: ${new Date().toLocaleString()}`
 
-    log.debug(LogTag, `Generating AI response for message ${msg.id} with content:`, content)
-
     const messages = historyWithGlobalContext(history)
+
+    log.debug(LogTag, `Generating AI response for message ${msg.id} with content:`, messages)
 
     await channel.sendTyping()
 
