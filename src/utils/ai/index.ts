@@ -115,9 +115,8 @@ ${Bosses.filter(Boolean)
                     topK: TopKeywords,
                     topP: TopPercent,
                     maxOutputTokens: MaxOutputTokens + 50, // +50 for message formatting
-                    googleSearch: true,
-                    googleSearchRetrieval: true,
-                    urlContext: true,
+                    googleSearch: {},
+                    urlContext: {},
                 },
                 messages,
             })
