@@ -34,8 +34,8 @@ export const Illustrations = {
     GetMuted: 'https://cdn.discordapp.com/attachments/1371819477708308581/1371949651275677806/GetMuted.png',
     RoleAdded: 'https://cdn.discordapp.com/attachments/1371819477708308581/1372524378914291782/RoleAdded.png',
     RoleRemoved: 'https://cdn.discordapp.com/attachments/1371819477708308581/1372524378616500345/RoleRemoved.png',
-    Error: 'https://cdn.discordapp.com/attachments/1371819477708308581/1390295544043274280/Error.png',
-    Confused: 'https://cdn.discordapp.com/attachments/1371819477708308581/1391473741237715074/Confused.png',
+    Error: 'https://cdn.discordapp.com/attachments/1371819477708308581/1501238069070663923/pv0p156.webp',
+    Confused: 'https://cdn.discordapp.com/attachments/1371819477708308581/1501238068768936159/8kdtppv.webp',
 }
 
 export type ProductColorResolvable = keyof typeof ProductColors
