@@ -1,5 +1,7 @@
 import assert from 'assert'
+import { GenkitError } from 'genkit'
 import { Base, type Message } from 'oceanic.js'
+import { inspect } from 'util'
 import { ai, config, log } from '~/context'
 import { getChannel, isTextableChannel } from '../channels'
 import { getUser } from '../users'
@@ -102,7 +104,7 @@ ${Bosses.filter(Boolean)
 
     const messages = historyWithGlobalContext(history)
 
-    log.debug(LogTag, `Generating AI response for message ${msg.id} with content:`, messages)
+    log.debug(LogTag, `Generating AI response for message ${msg.id} with content:`, inspect(messages, { depth: 5 }))
 
     await channel.sendTyping()
 
@@ -158,6 +160,10 @@ ${Bosses.filter(Boolean)
             // Success!
             return
         } catch (err) {
+            if (err instanceof GenkitError && err.code === 429) {
+                log.warn(LogTag, `Model ${model.name} rate limited, trying next model...`)
+                continue
+            }
             log.error(LogTag, `Error generating AI response for message ${msg.id} with model ${model.name}:`, err)
         }
     }
