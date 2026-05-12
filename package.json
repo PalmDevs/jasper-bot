@@ -14,12 +14,12 @@
     "fix": "biome check . --write"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.4.12",
-    "@types/bun": "1.3.12",
+    "@biomejs/biome": "^2.4.15",
+    "@types/bun": "1.3.13",
     "drizzle-kit": "^0.31.10"
   },
   "peerDependencies": {
-    "typescript": "^6.0.2"
+    "typescript": "^6.0.3"
   },
   "trustedDependencies": [
     "@biomejs/biome",
@@ -30,7 +30,7 @@
     "zlib-sync"
   ],
   "dependencies": {
-    "@genkit-ai/google-genai": "^1.32.0",
+    "@genkit-ai/google-genai": "^1.33.0",
     "@sapphire/async-queue": "^1.5.5",
     "@sapphire/duration": "^1.2.0",
     "chalk-template": "^1.1.2",
