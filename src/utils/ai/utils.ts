@@ -26,9 +26,15 @@ import type { MessageData, MessageDataEntry } from './types'
 
 export let CurrentMessageId = 0
 
+const MimeMap = {
+    png: 'image/png',
+    jpg: 'image/jpeg',
+    jpeg: 'image/jpeg',
+    gif: 'image/gif',
+    webp: 'image/webp',
+} as const
+
 const UserMentionRegex = /<@(\d+)>/g
-const ImageRegex =
-    /https?:\/\/(?:cdn\.discordapp\.com|media\.discordapp\.net)\/attachments\/\d+\/\d+\/\S+\.(?:png|jpg|jpeg|gif|webp)(?:\?\S+)?/gi
 
 export async function formatMessage(
     msg: Message,
@@ -137,16 +143,19 @@ export async function formatMessageGroup(
             }
         }
 
-        // Image recognition from CDN links
-        const matches = msg.content.matchAll(ImageRegex)
-        for (const match of matches) {
-            const url = match[0]
-            const ext = url.split('.').pop()?.split('?')[0]
-            const contentType = ext === 'jpg' ? 'image/jpeg' : `image/${ext}`
-            if ([...msg.attachments.values()].some(a => a.url === url)) continue
+        // Embedded images
+        for (const embed of msg.embeds) {
+            if (embed.type !== 'image') continue
+            if (!embed.thumbnail?.url) continue
+
+            const url = embed.thumbnail.url
+            const ext = url.split('.').pop()?.toLowerCase()
+            const contentType = ext && MimeMap[ext as keyof typeof MimeMap]
+            if (!contentType) continue
+
             parts.push({
                 media: {
-                    url,
+                    url: embed.thumbnail.url,
                     contentType,
                 },
             })
