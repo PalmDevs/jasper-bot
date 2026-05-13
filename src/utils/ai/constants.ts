@@ -57,7 +57,7 @@ export const DiscordMessageIdToLLMMessageId = new QuickLRU<string, number>({
 })
 
 export const Models = [
-    googleAI.model('gemini-3.1-flash-lite-preview'),
+    googleAI.model('gemini-3.1-flash-lite'),
     googleAI.model('gemini-3-flash-preview'),
     googleAI.model('gemini-2.5-flash-lite'),
     googleAI.model('gemini-2.5-flash'),
