@@ -118,6 +118,7 @@ ${Bosses.filter(Boolean)
                 system: BaseSystemPrompt + InfoSection,
                 abortSignal: AbortSignal.timeout(Timeout),
                 config: {
+                    thinkingConfig: { thinkingLevel: 'LOW' },
                     temperature: Temparature,
                     topK: TopKeywords,
                     topP: TopPercent,
